@@ -12,10 +12,11 @@ final class TabBarViewController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let trackerViewController = TrackerViewController()
+        let navigationController = UINavigationController(rootViewController: trackerViewController)
         let statisticViewController = StatisticViewController()
         trackerViewController.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(named: "tabBarCircle"), selectedImage: nil)
         statisticViewController.tabBarItem = UITabBarItem(title: "Статистика", image: UIImage(named: "tabBarRabbit"), selectedImage: nil)
-        self.viewControllers = [trackerViewController, statisticViewController]
+        self.viewControllers = [navigationController, statisticViewController]
         addSeparatorLine()
     }
     

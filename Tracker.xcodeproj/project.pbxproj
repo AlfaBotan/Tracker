@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C1E29BB2C3BE4BB006FB28C /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C1E29BA2C3BE4BB006FB28C /* Tracker.swift */; };
+		1C1E29BD2C3BE4EC006FB28C /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C1E29BC2C3BE4EC006FB28C /* TrackerCategory.swift */; };
+		1C1E29BF2C3C58A0006FB28C /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C1E29BE2C3C58A0006FB28C /* TrackerRecord.swift */; };
 		1C5B65D32C347CC5002B4541 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B65D22C347CC5002B4541 /* AppDelegate.swift */; };
 		1C5B65D52C347CC5002B4541 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B65D42C347CC5002B4541 /* SceneDelegate.swift */; };
 		1C5B65D72C347CC5002B4541 /* TrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B65D62C347CC5002B4541 /* TrackerViewController.swift */; };
@@ -14,9 +17,15 @@
 		1C5B65DF2C347CC7002B4541 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 1C5B65DE2C347CC7002B4541 /* Base */; };
 		1C5B65E72C359B58002B4541 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B65E62C359B58002B4541 /* TabBarViewController.swift */; };
 		1C5B65E92C35AF7F002B4541 /* StatisticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5B65E82C35AF7F002B4541 /* StatisticViewController.swift */; };
+		1CB36D112C4455E400F2BCF0 /* TrackerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB36D102C4455E400F2BCF0 /* TrackerCollectionViewCell.swift */; };
+		1CCCF3AB2C459D9B00F38C8B /* SupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCCF3AA2C459D9B00F38C8B /* SupplementaryView.swift */; };
+		1CCCF3AD2C45AF3B00F38C8B /* Weekdays.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCCF3AC2C45AF3B00F38C8B /* Weekdays.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1C1E29BA2C3BE4BB006FB28C /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
+		1C1E29BC2C3BE4EC006FB28C /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
+		1C1E29BE2C3C58A0006FB28C /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
 		1C5B65CF2C347CC5002B4541 /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C5B65D22C347CC5002B4541 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1C5B65D42C347CC5002B4541 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -26,6 +35,9 @@
 		1C5B65E02C347CC7002B4541 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C5B65E62C359B58002B4541 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		1C5B65E82C35AF7F002B4541 /* StatisticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticViewController.swift; sourceTree = "<group>"; };
+		1CB36D102C4455E400F2BCF0 /* TrackerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCollectionViewCell.swift; sourceTree = "<group>"; };
+		1CCCF3AA2C459D9B00F38C8B /* SupplementaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementaryView.swift; sourceTree = "<group>"; };
+		1CCCF3AC2C45AF3B00F38C8B /* Weekdays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weekdays.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +70,7 @@
 		1C5B65D12C347CC5002B4541 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				1CB36D0F2C44559E00F2BCF0 /* Models */,
 				1C5B65EB2C35AFAC002B4541 /* TabBatController */,
 				1C5B65EC2C35AFBF002B4541 /* TrackerViewController */,
 				1C5B65EA2C35AF88002B4541 /* StatisticViewController */,
@@ -90,8 +103,21 @@
 			isa = PBXGroup;
 			children = (
 				1C5B65D62C347CC5002B4541 /* TrackerViewController.swift */,
+				1CB36D102C4455E400F2BCF0 /* TrackerCollectionViewCell.swift */,
+				1CCCF3AA2C459D9B00F38C8B /* SupplementaryView.swift */,
 			);
 			path = TrackerViewController;
+			sourceTree = "<group>";
+		};
+		1CB36D0F2C44559E00F2BCF0 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				1C1E29BE2C3C58A0006FB28C /* TrackerRecord.swift */,
+				1C1E29BC2C3BE4EC006FB28C /* TrackerCategory.swift */,
+				1C1E29BA2C3BE4BB006FB28C /* Tracker.swift */,
+				1CCCF3AC2C45AF3B00F38C8B /* Weekdays.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -164,11 +190,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C1E29BB2C3BE4BB006FB28C /* Tracker.swift in Sources */,
+				1C1E29BF2C3C58A0006FB28C /* TrackerRecord.swift in Sources */,
 				1C5B65E72C359B58002B4541 /* TabBarViewController.swift in Sources */,
 				1C5B65D72C347CC5002B4541 /* TrackerViewController.swift in Sources */,
+				1CB36D112C4455E400F2BCF0 /* TrackerCollectionViewCell.swift in Sources */,
+				1CCCF3AB2C459D9B00F38C8B /* SupplementaryView.swift in Sources */,
 				1C5B65D32C347CC5002B4541 /* AppDelegate.swift in Sources */,
 				1C5B65E92C35AF7F002B4541 /* StatisticViewController.swift in Sources */,
+				1CCCF3AD2C45AF3B00F38C8B /* Weekdays.swift in Sources */,
 				1C5B65D52C347CC5002B4541 /* SceneDelegate.swift in Sources */,
+				1C1E29BD2C3BE4EC006FB28C /* TrackerCategory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
