@@ -8,7 +8,7 @@
 import UIKit
 
 final class SupplementaryView: UICollectionReusableView {
-    let titleLabel = UILabel()
+     lazy var titleLabel = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)

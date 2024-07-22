@@ -9,11 +9,12 @@ import UIKit
 
 final class TrackerCollectionViewCell: UICollectionViewCell {
     
-    let topView = UIView()
-    let smileLabel = UILabel()
-    let descriptionLAble = UILabel()
-    let countDaysLable = UILabel()
-    let plusButton = UIButton()
+    
+    private lazy var topView = UIView()
+    private lazy var smileLabel = UILabel()
+    private lazy var descriptionLAble = UILabel()
+    private lazy var countDaysLable = UILabel()
+    private lazy var plusButton = UIButton()
     private var indexPath: IndexPath?
     private var trackerId: UUID? = nil
     private var isCompleted: Bool = false

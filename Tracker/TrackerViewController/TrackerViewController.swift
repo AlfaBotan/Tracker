@@ -47,33 +47,22 @@ final class TrackerViewController: UIViewController {
         let image = UIImage(named: "plus1")
         plusButton.setImage(image, for: .normal)
         plusButton.tintColor = .ypBlack
-//        plusButton.translatesAutoresizingMaskIntoConstraints = false
-//        view.addSubview(plusButton)
+        plusButton.addTarget(self, action: #selector(plusButtonPress), for: .touchUpInside)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: plusButton)
-
-        
-//        NSLayoutConstraint.activate([
-//            plusButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 1),
-//            plusButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 6),
-//            plusButton.widthAnchor.constraint(equalToConstant: 42),
-//            plusButton.heightAnchor.constraint(equalToConstant: 42)
-//        ])
+    }
+    
+    @objc
+    private func plusButtonPress() {
+        let viewController = TrackerTypeSelectionViewController()
+        present(viewController, animated: true)
     }
     
     private func addDatePicker() {
-//        datePicker.translatesAutoresizingMaskIntoConstraints = false
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .compact
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
-//        view.addSubview(datePicker)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
-//        NSLayoutConstraint.activate([
-//            datePicker.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 5),
-//            datePicker.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-//            datePicker.heightAnchor.constraint(equalToConstant: 34),
-//            datePicker.widthAnchor.constraint(equalToConstant: 77)
-//        ])
     }
     
     private func addTrackerLable() {
@@ -104,6 +93,9 @@ final class TrackerViewController: UIViewController {
             paddingView.addSubview(searchIcon)
         searchField.leftView = paddingView
         searchField.leftViewMode = .unlessEditing
+        searchField.leftViewMode = .always
+        searchField.clearButtonMode = .whileEditing
+
         
         searchField.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(searchField)
