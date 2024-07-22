@@ -1,33 +1,25 @@
 //
-//  HabitViewController.swift
+//  EventViewController.swift
 //  Tracker
 //
-//  Created by Илья Волощик on 20.07.24.
+//  Created by Илья Волощик on 22.07.24.
 //
 
 import UIKit
 
-protocol HabitViewControllerDelegate: AnyObject {
-    func didCreateHabitTracker(category: String, tracker: Tracker)
+protocol EventViewControllerDelegate: AnyObject {
+    func didCreateEventTracker(category: String, tracker: Tracker)
 }
 
-final class HabitViewController: UIViewController {
+final class EventViewController: UIViewController {
     
     private lazy var titleLable = UILabel()
     private lazy var nameTrackerTextField = UITextField()
-    private lazy var habitTableView = UITableView(frame: .zero)
+    private lazy var eventTableView = UITableView(frame: .zero)
     private lazy var createButton = UIButton()
     private lazy var cancelButton = UIButton(type: .system)
-    private var rowsForTableView: [String] = ["Категория", "Расписание"]
-    weak var delegate: HabitViewControllerDelegate?
-    var weekDaysArrayForTracker: [Weekdays] = []
-    var weekdaysForTracker: String {
-        var string: String = ""
-        for i in weekDaysArrayForTracker {
-            string += "\(i.shortDayName), "
-        }
-        return string
-    }
+    private var rowsForTableView: [String] = ["Категория"]
+    weak var delegate: EventViewControllerDelegate?
     var textFieldIsEmpty:Bool = true
     var categoryForTracker: String = ""
     
@@ -36,8 +28,8 @@ final class HabitViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite
-        habitTableView.dataSource = self
-        habitTableView.delegate = self
+        eventTableView.delegate = self
+        eventTableView.dataSource = self
         configureSubviews()
     }
     
@@ -60,12 +52,12 @@ final class HabitViewController: UIViewController {
         nameTrackerTextField.clearButtonMode = .whileEditing
         nameTrackerTextField.addTarget(self, action: #selector(editingChanged), for: .editingChanged)
         
-        habitTableView.register(HabitTableViewСеll.self, forCellReuseIdentifier: HabitTableViewСеll.identifer)
-        habitTableView.separatorStyle = .singleLine
-        habitTableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-        habitTableView.layer.masksToBounds = true
-        habitTableView.layer.cornerRadius = 16
-        habitTableView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
+        eventTableView.register(EventTableViewСеll.self, forCellReuseIdentifier: EventTableViewСеll.identifer)
+        eventTableView.separatorStyle = .singleLine
+        eventTableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        eventTableView.layer.masksToBounds = true
+        eventTableView.layer.cornerRadius = 16
+        eventTableView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
         
         createButton.setTitle("Создать", for: .normal)
         createButton.tintColor = .ypWhite
@@ -86,13 +78,13 @@ final class HabitViewController: UIViewController {
         
         titleLable.translatesAutoresizingMaskIntoConstraints = false
         nameTrackerTextField.translatesAutoresizingMaskIntoConstraints = false
-        habitTableView.translatesAutoresizingMaskIntoConstraints = false
+        eventTableView.translatesAutoresizingMaskIntoConstraints = false
         createButton.translatesAutoresizingMaskIntoConstraints = false
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(titleLable)
         view.addSubview(nameTrackerTextField)
-        view.addSubview(habitTableView)
+        view.addSubview(eventTableView)
         view.addSubview(createButton)
         view.addSubview(cancelButton)
         
@@ -107,10 +99,10 @@ final class HabitViewController: UIViewController {
             nameTrackerTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             nameTrackerTextField.topAnchor.constraint(equalTo: titleLable.bottomAnchor, constant: 24),
             
-            habitTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            habitTableView.topAnchor.constraint(equalTo: nameTrackerTextField.bottomAnchor, constant: 24),
-            habitTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            habitTableView.heightAnchor.constraint(equalToConstant: 150),
+            eventTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            eventTableView.topAnchor.constraint(equalTo: nameTrackerTextField.bottomAnchor, constant: 24),
+            eventTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            eventTableView.heightAnchor.constraint(equalToConstant: 75),
             
             cancelButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
@@ -136,69 +128,52 @@ final class HabitViewController: UIViewController {
     }
     
     @objc private func createButtonIsClicked() {
+        let weekDaysArrayForTracker: [Weekdays] = [.Monday]
         let tracker = Tracker(Identifier: UUID(), name: nameTrackerTextField.text!, color: .ypColor4, emoji: "🍄", timetable: weekDaysArrayForTracker)
-        delegate?.didCreateHabitTracker(category: categoryForTracker, tracker: tracker)
+        delegate?.didCreateEventTracker(category: categoryForTracker, tracker: tracker)
         dismiss(animated: true)
     }
     
     private func activateCreateButton() {
-        if textFieldIsEmpty == false, weekDaysArrayForTracker.isEmpty == false, categoryForTracker.isEmpty == false  {
+        if textFieldIsEmpty == false, categoryForTracker.isEmpty == false  {
             createButton.isEnabled = true
             createButton.backgroundColor = .ypBlack
         }
     }
 }
 
-extension HabitViewController: UITableViewDelegate {
+extension EventViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.row == 0 {
             let viewController = CategoryViewController()
-            viewController.delegateForHabit = self
+            viewController.delegateForEvent = self
             present(viewController, animated: true)
-        } else {
-            let viewController = WeekdaysViewController()
-            viewController.delegate = self
-            present(viewController, animated: true)
-        }
-        tableView.deselectRow(at: indexPath, animated: true)
+            tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 
-extension HabitViewController: UITableViewDataSource {
+extension EventViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         rowsForTableView.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: HabitTableViewСеll.identifer, for: indexPath) as? HabitTableViewСеll else {
-            assertionFailure("Не удалось выполнить приведение к HabitTableViewСеll")
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: EventTableViewСеll.identifer, for: indexPath) as? EventTableViewСеll else {
+            assertionFailure("Не удалось выполнить приведение к EventTableViewСеll")
             return UITableViewCell()
         }
         let text = rowsForTableView[indexPath.row]
         cell.configureNameLable(textNameLable: text)
-        if indexPath.row == 0 {
-            cell.configureDescriptionLable(textDescriptionLable: categoryForTracker)
-        } else {
-            cell.configureDescriptionLable(textDescriptionLable: weekdaysForTracker)
-        }
+        cell.configureDescriptionLable(textDescriptionLable: categoryForTracker)
+        
         cell.backgroundColor = .ypBackground
         return cell
     }
 }
 
-extension HabitViewController: CategoryViewControllerDelegateForHabit {
+extension EventViewController: CategoryViewControllerDelegateForEvent {
     func categoryIsPicket(category: String) {
         categoryForTracker = category
-        habitTableView.reloadData()
+        eventTableView.reloadData()
     }
-}
-
-extension HabitViewController: WeekdaysViewControllerDelegate {
-    func weekdaysIsPicket(weekDaysArray: [Weekdays]) {
-        weekDaysArrayForTracker = weekDaysArray
-        habitTableView.reloadData()
-    }
-    
-    
 }

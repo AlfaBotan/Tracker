@@ -7,10 +7,18 @@
 
 import UIKit
 
+protocol TrackerTypeSelectionViewControllerDelegate: AnyObject {
+    func addNewTracker(category: String, tracker: Tracker)
+}
+
 final class TrackerTypeSelectionViewController: UIViewController {
+    
     private lazy var titleLable = UILabel()
     private lazy var habitButton = UIButton()
     private lazy var eventButton = UIButton()
+    
+    weak var delegate: TrackerTypeSelectionViewControllerDelegate?
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,7 +31,7 @@ final class TrackerTypeSelectionViewController: UIViewController {
         titleLable.font = .systemFont(ofSize: 16, weight: .medium)
         titleLable.textAlignment = .center
         titleLable.textColor = .ypBlack
-        
+                
         habitButton.setTitle("Привычка", for: .normal)
         habitButton.backgroundColor = .ypBlack
         habitButton.tintColor = .ypWhite
@@ -38,6 +46,7 @@ final class TrackerTypeSelectionViewController: UIViewController {
         eventButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         eventButton.layer.cornerRadius = 16
         eventButton.layer.masksToBounds = true
+        eventButton.addTarget(self, action: #selector(eventButtonPress), for: .touchUpInside)
         
         titleLable.translatesAutoresizingMaskIntoConstraints = false
         habitButton.translatesAutoresizingMaskIntoConstraints = false
@@ -69,6 +78,28 @@ final class TrackerTypeSelectionViewController: UIViewController {
     @objc
     private func habitButtonPress() {
         let viewController = HabitViewController()
+        viewController.delegate = self
         present(viewController, animated: true)
+    }
+    
+    @objc
+    private func eventButtonPress() {
+        let viewController = EventViewController()
+        viewController.delegate = self
+        present(viewController, animated: true)
+    }
+}
+
+extension TrackerTypeSelectionViewController: HabitViewControllerDelegate {
+    func didCreateHabitTracker(category: String, tracker: Tracker) {
+        delegate?.addNewTracker(category: category, tracker: tracker)
+        dismiss(animated: true)
+    }
+}
+
+extension TrackerTypeSelectionViewController: EventViewControllerDelegate {
+    func didCreateEventTracker(category: String, tracker: Tracker) {
+        delegate?.addNewTracker(category: category, tracker: tracker)
+        dismiss(animated: true)
     }
 }

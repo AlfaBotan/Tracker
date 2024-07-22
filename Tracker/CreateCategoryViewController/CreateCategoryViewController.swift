@@ -7,13 +7,17 @@
 
 import UIKit
 
+protocol CreateCategoryViewControllerDelegate: AnyObject {
+    func createNewCategory(newCategory: String)
+}
+
 final class CreateCategoryViewController: UIViewController {
     
     private lazy var titleLable = UILabel()
     private lazy var categoryTextField = UITextField()
     private lazy var doneButton = UIButton()
     private var textFromTextField: String?
-    
+    weak var delegate: CreateCategoryViewControllerDelegate?
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite
@@ -75,7 +79,7 @@ final class CreateCategoryViewController: UIViewController {
     }
     
     @objc private func doneButtonClicked() {
-        
+        delegate?.createNewCategory(newCategory: textFromTextField!)
         dismiss(animated: true)
     }
     

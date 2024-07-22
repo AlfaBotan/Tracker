@@ -54,6 +54,7 @@ final class TrackerViewController: UIViewController {
     @objc
     private func plusButtonPress() {
         let viewController = TrackerTypeSelectionViewController()
+        viewController.delegate = self
         present(viewController, animated: true)
     }
     
@@ -294,6 +295,24 @@ extension TrackerViewController: TrackerCollectionViewCellDelegate {
             collectionView.reloadItems(at: [indexPath])
         }
         
+    }
+}
+
+extension TrackerViewController: TrackerTypeSelectionViewControllerDelegate {
+    func addNewTracker(category: String, tracker: Tracker) {
+        print("мы попали в трекер контроллер")
+
+        if let categoryIndex = mockTrackers.firstIndex(where: { $0.title == category }) {
+            print("Добавляем трекер в имеющуюся категорию")
+
+            mockTrackers[categoryIndex].trackers.append(tracker)
+               } else {
+                   print("Создаем новую категорию")
+
+                   let newCategory = TrackerCategory(title: category, trackers: [tracker])
+                   mockTrackers.append(newCategory)
+               }
+        filterTrackers(for: selectedDate)
     }
 }
 

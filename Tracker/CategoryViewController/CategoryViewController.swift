@@ -7,6 +7,14 @@
 
 import UIKit
 
+protocol CategoryViewControllerDelegateForHabit: AnyObject {
+     func categoryIsPicket(category: String)
+}
+
+protocol CategoryViewControllerDelegateForEvent: AnyObject {
+    func categoryIsPicket(category: String)
+}
+
 final class CategoryViewController: UIViewController {
     
     private lazy var titleLable = UILabel()
@@ -14,7 +22,8 @@ final class CategoryViewController: UIViewController {
     private lazy var placeholder = UIImageView()
     private lazy var placeholderLable = UILabel()
     private lazy var addCategoryButton = UIButton()
-    
+    weak var delegateForHabit: CategoryViewControllerDelegateForHabit?
+    weak var delegateForEvent: CategoryViewControllerDelegateForEvent?
     var categoryForTableView: [String] = [
         "Спорт", "Учёба", "Домашние дела", "Работа"
     ]
@@ -111,6 +120,7 @@ final class CategoryViewController: UIViewController {
     
     @objc private func addCategoryButtonClicked() {
         let viewController = CreateCategoryViewController()
+        viewController.delegate = self
         present(viewController, animated: true)
     }
 }
@@ -123,6 +133,13 @@ extension CategoryViewController: UITableViewDelegate {
             return
             }
         cell.showOrHideDoneImg()
+        
+        if delegateForHabit == nil {
+            delegateForEvent?.categoryIsPicket(category: cell.getChoiсe())
+        } else {
+            delegateForHabit?.categoryIsPicket(category: cell.getChoiсe())
+        }
+        dismiss(animated: true)
     }
 }
 
@@ -144,3 +161,10 @@ extension CategoryViewController: UITableViewDataSource {
         }
     
     }
+
+extension CategoryViewController: CreateCategoryViewControllerDelegate {
+    func createNewCategory(newCategory: String) {
+        categoryForTableView.append(newCategory)
+        categoryTableView.reloadData()
+    }
+}

@@ -7,12 +7,18 @@
 
 import UIKit
 
+protocol WeekdaysViewControllerDelegate: AnyObject {
+    func weekdaysIsPicket(weekDaysArray: [Weekdays])
+}
+
 final class WeekdaysViewController: UIViewController {
     
     private lazy var titleLable = UILabel()
     private lazy var weekdaysTableView = UITableView(frame: .zero)
     private lazy var doneButton = UIButton()
     private var switchStates: [Bool] = [false, false, false, false, false, false, false]
+    var weekDaysArrayFromVC: [Weekdays] = []
+    weak var delegate: WeekdaysViewControllerDelegate?
     
     
     override func viewDidLoad() {
@@ -73,7 +79,7 @@ final class WeekdaysViewController: UIViewController {
     }
     
     @objc private func doneButtonClicked() {
-        
+        delegate?.weekdaysIsPicket(weekDaysArray: weekDaysArrayFromVC)
         dismiss(animated: true)
     }
     
@@ -127,6 +133,9 @@ extension WeekdaysViewController: WeekdaysTableViewCellDelegate {
     func switchValueChanged(in cell: WeekdaysTableViewCell) {
             if let indexPath = weekdaysTableView.indexPath(for: cell) {
                 switchStates[indexPath.row] = cell.checkSwitchButtonStat()
+                let weekDay = Weekdays.allCases[indexPath.row]
+                weekDaysArrayFromVC.append(weekDay)
+                print("\(weekDaysArrayFromVC)")
                 updatedoneButtonnState()
             }
         }

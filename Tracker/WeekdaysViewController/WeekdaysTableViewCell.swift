@@ -20,7 +20,6 @@ final class WeekdaysTableViewCell: UITableViewCell {
     weak var delegate: WeekdaysTableViewCellDelegate?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-//        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureSubviews()
     }
@@ -66,7 +65,6 @@ final class WeekdaysTableViewCell: UITableViewCell {
     }
     
     @objc func switchChanged() {
-        print("велью изменилось из ячейки")
             delegate?.switchValueChanged(in: self)
         }
 }

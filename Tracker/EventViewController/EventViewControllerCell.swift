@@ -1,15 +1,15 @@
 //
-//  CategoryAndTimetableTableViewСеll.swift
+//  EventViewControllerCell.swift
 //  Tracker
 //
-//  Created by Илья Волощик on 20.07.24.
+//  Created by Илья Волощик on 22.07.24.
 //
 
 import UIKit
 
-final class HabitTableViewСеll: UITableViewCell {
+final class EventTableViewСеll: UITableViewCell {
     
-    static let identifer = "HabitTableViewСеll"
+    static let identifer = "EventTableViewСеll"
     
     private lazy var chevronImg: UIImageView = {
         return UIImageView(image: UIImage(named: "chevron"))

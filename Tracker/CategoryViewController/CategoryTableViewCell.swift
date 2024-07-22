@@ -65,4 +65,9 @@ final class CategoryTableViewСеll: UITableViewCell {
             doneImg.isHidden = true
         }
     }
+    
+    func getChoiсe() -> String {
+        guard let text = categoryLable.text else {return "Без категории"}
+        return text
+    }
 }
