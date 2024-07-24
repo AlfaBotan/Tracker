@@ -44,7 +44,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         
         descriptionLAble.font = .systemFont(ofSize: 12, weight: .medium)
         descriptionLAble.textColor = .ypWhite
-    
+        
         countDaysLable.font = .systemFont(ofSize: 12, weight: .medium)
         countDaysLable.textColor = .ypBlack
         
@@ -53,7 +53,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         plusButton.layer.masksToBounds = true
         plusButton.tintColor = .ypWhite
         plusButton.addTarget(self, action: #selector(plusButtonPress), for: .touchUpInside)
-       
+        
         
         descriptionLAble.translatesAutoresizingMaskIntoConstraints = false
         smileLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -68,11 +68,11 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(plusButton)
         
         
-       NSLayoutConstraint.activate([
-        topView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor),
-        topView.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor),
-        topView.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor),
-        topView.heightAnchor.constraint(equalToConstant: 90),
+        NSLayoutConstraint.activate([
+            topView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor),
+            topView.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor),
+            topView.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor),
+            topView.heightAnchor.constraint(equalToConstant: 90),
         ])
         
         NSLayoutConstraint.activate([
@@ -103,15 +103,15 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         delegate?.buttonTapped(in: self)
     }
     
-     func configCell(id: UUID, name: String, color: UIColor, emoji: String, completedDays: Int, isEnabled: Bool, isCompleted: Bool, indexPath: IndexPath){
+    func configCell(id: UUID, name: String, color: UIColor, emoji: String, completedDays: Int, isEnabled: Bool, isCompleted: Bool, indexPath: IndexPath){
         topView.backgroundColor = color
         plusButton.backgroundColor = color
         plusButton.alpha = isCompleted ? 0.3 : 1
-         if isCompleted{
-             plusButton.setImage(UIImage(named: "done"), for: .normal)
-         } else {
-             plusButton.setImage(UIImage(systemName: "plus"), for: .normal)
-         }
+        if isCompleted{
+            plusButton.setImage(UIImage(named: "done"), for: .normal)
+        } else {
+            plusButton.setImage(UIImage(systemName: "plus"), for: .normal)
+        }
         descriptionLAble.text = name
         smileLabel.text = emoji
         countDaysLable.text = "\(completedDays.days())"

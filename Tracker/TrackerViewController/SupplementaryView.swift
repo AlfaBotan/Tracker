@@ -8,19 +8,19 @@
 import UIKit
 
 final class SupplementaryView: UICollectionReusableView {
-     lazy var titleLabel = UILabel()
+    lazy var titleLabel = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-            addSubview(titleLabel)
-            titleLabel.font = .systemFont(ofSize: 19, weight: .bold)
-            titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(titleLabel)
+        titleLabel.font = .systemFont(ofSize: 19, weight: .bold)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
-            NSLayoutConstraint.activate([
+        NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28),
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 24),
             titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12),
-            ])
+        ])
     }
     
     required init?(coder: NSCoder) {

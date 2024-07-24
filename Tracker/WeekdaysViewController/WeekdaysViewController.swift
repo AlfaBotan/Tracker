@@ -9,6 +9,7 @@ import UIKit
 
 protocol WeekdaysViewControllerDelegate: AnyObject {
     func weekdaysIsPicket(weekDaysArray: [Weekdays])
+    func updateCreateButtonState()
 }
 
 final class WeekdaysViewController: UIViewController {
@@ -23,10 +24,17 @@ final class WeekdaysViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("viewDidLoad")
         view.backgroundColor = .ypWhite
         weekdaysTableView.dataSource = self
         weekdaysTableView.delegate = self
         configureSubviews()
+        
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        delegate?.weekdaysIsPicket(weekDaysArray: weekDaysArrayFromVC)
     }
     
     private func configureSubviews() {
@@ -54,7 +62,7 @@ final class WeekdaysViewController: UIViewController {
         view.addSubview(titleLable)
         view.addSubview(weekdaysTableView)
         view.addSubview(doneButton)
-
+        
         titleLable.translatesAutoresizingMaskIntoConstraints = false
         weekdaysTableView.translatesAutoresizingMaskIntoConstraints = false
         doneButton.translatesAutoresizingMaskIntoConstraints = false
@@ -64,11 +72,10 @@ final class WeekdaysViewController: UIViewController {
             titleLable.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             titleLable.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             titleLable.heightAnchor.constraint(equalToConstant: 22),
-
+            
             weekdaysTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 66),
             weekdaysTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             weekdaysTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-//            weekdaysTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -92),
             weekdaysTableView.heightAnchor.constraint(equalToConstant: 525),
             
             doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
@@ -80,6 +87,7 @@ final class WeekdaysViewController: UIViewController {
     
     @objc private func doneButtonClicked() {
         delegate?.weekdaysIsPicket(weekDaysArray: weekDaysArrayFromVC)
+        delegate?.updateCreateButtonState()
         dismiss(animated: true)
     }
     
@@ -119,27 +127,38 @@ extension WeekdaysViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: WeekdaysTableViewCell.identifer, for: indexPath) as? WeekdaysTableViewCell else {
             assertionFailure("Не удалось выполнить приведение к WeekdaysTableViewCell")
             return UITableViewCell()
-            }
+        }
         
         let weekday = Weekdays.allCases[indexPath.row]
         cell.configureCell(textLable: weekday.rawValue)
+        for i in weekDaysArrayFromVC {
+            if i.rawValue == weekday.rawValue {
+                self.switchStates[indexPath.row] = true
+                cell.configureSwitchButtonStat(isOn: true)
+            }
+        }
         cell.backgroundColor = .ypBackground
         cell.delegate = self
+        updatedoneButtonnState()
         return cell
-        }
+    }
 }
 
 extension WeekdaysViewController: WeekdaysTableViewCellDelegate {
     func switchValueChanged(in cell: WeekdaysTableViewCell) {
-            if let indexPath = weekdaysTableView.indexPath(for: cell) {
-                switchStates[indexPath.row] = cell.checkSwitchButtonStat()
-                let weekDay = Weekdays.allCases[indexPath.row]
-                weekDaysArrayFromVC.append(weekDay)
-                print("\(weekDaysArrayFromVC)")
+        if let indexPath = weekdaysTableView.indexPath(for: cell) {
+            switchStates[indexPath.row] = cell.checkSwitchButtonStat()
+            let weekDay = Weekdays.allCases[indexPath.row]
+            if let weekdayIndex = weekDaysArrayFromVC.firstIndex(where: {$0 == weekDay}) {
+                weekDaysArrayFromVC.remove(at: weekdayIndex)
                 updatedoneButtonnState()
+                return
             }
+            weekDaysArrayFromVC.append(weekDay)
+            updatedoneButtonnState()
         }
+    }
 }
-    
-    
+
+
 

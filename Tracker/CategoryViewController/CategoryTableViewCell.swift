@@ -49,7 +49,7 @@ final class CategoryTableViewСеll: UITableViewCell {
             doneImg.widthAnchor.constraint(equalToConstant: 24),
             
             categoryLable.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            categoryLable.centerYAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.centerYAnchor),
+            categoryLable.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             categoryLable.trailingAnchor.constraint(equalTo: doneImg.leadingAnchor)
         ])
     }

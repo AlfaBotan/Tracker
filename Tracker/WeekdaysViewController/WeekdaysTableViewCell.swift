@@ -51,7 +51,7 @@ final class WeekdaysTableViewCell: UITableViewCell {
             switchButton.widthAnchor.constraint(equalToConstant: 51),
             
             weekdaysLable.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            weekdaysLable.centerYAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.centerYAnchor),
+            weekdaysLable.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             weekdaysLable.trailingAnchor.constraint(equalTo: switchButton.leadingAnchor)
         ])
     }
@@ -63,8 +63,11 @@ final class WeekdaysTableViewCell: UITableViewCell {
     func checkSwitchButtonStat() -> Bool {
         switchButton.isOn
     }
+    func configureSwitchButtonStat(isOn: Bool) {
+        switchButton.isOn = isOn
+    }
     
     @objc func switchChanged() {
-            delegate?.switchValueChanged(in: self)
-        }
+        delegate?.switchValueChanged(in: self)
+    }
 }

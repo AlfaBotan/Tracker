@@ -21,9 +21,9 @@ final class TabBarViewController: UITabBarController {
     }
     
     private func addSeparatorLine() {
-           let separator = CALayer()
-           separator.frame = CGRect(x: 0, y: 0, width: tabBar.bounds.width, height: 1)
-           separator.backgroundColor = UIColor.ypLightGray.cgColor
-           tabBar.layer.addSublayer(separator)
-       }
+        let separator = CALayer()
+        separator.frame = CGRect(x: 0, y: 0, width: tabBar.bounds.width, height: 1)
+        separator.backgroundColor = UIColor.ypLightGray.cgColor
+        tabBar.layer.addSublayer(separator)
+    }
 }

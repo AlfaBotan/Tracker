@@ -7,14 +7,13 @@
 
 import UIKit
 
-final class EventTableViewСеll: UITableViewCell {
+final class HabitAndEventTableViewСеll: UITableViewCell {
     
-    static let identifer = "EventTableViewСеll"
+    static let identifer = "HabitAndEventTableViewСеll"
     
     private lazy var chevronImg: UIImageView = {
         return UIImageView(image: UIImage(named: "chevron"))
     }()
-    
     private lazy var nameLable = UILabel()
     private lazy var descriptionLable = UILabel()
     
@@ -71,7 +70,10 @@ final class EventTableViewСеll: UITableViewCell {
     }
     
     func configureDescriptionLable(textDescriptionLable: String) {
-        descriptionLable.text = textDescriptionLable
+        var text = textDescriptionLable
+        if text.last == "," {
+            text.removeLast()
+        }
+        descriptionLable.text = text
     }
-    
 }

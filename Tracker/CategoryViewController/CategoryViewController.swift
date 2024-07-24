@@ -8,7 +8,7 @@
 import UIKit
 
 protocol CategoryViewControllerDelegateForHabit: AnyObject {
-     func categoryIsPicket(category: String)
+    func categoryIsPicket(category: String)
 }
 
 protocol CategoryViewControllerDelegateForEvent: AnyObject {
@@ -16,17 +16,18 @@ protocol CategoryViewControllerDelegateForEvent: AnyObject {
 }
 
 final class CategoryViewController: UIViewController {
+    var categoryForTableView: [String] = [
+        "Спорт", "Учёба", "Домашние дела", "Работа"
+    ]
+    
+    weak var delegateForEvent: CategoryViewControllerDelegateForEvent?
+    weak var delegateForHabit: CategoryViewControllerDelegateForHabit?
     
     private lazy var titleLable = UILabel()
     private lazy var categoryTableView = UITableView(frame: .zero)
     private lazy var placeholder = UIImageView()
     private lazy var placeholderLable = UILabel()
     private lazy var addCategoryButton = UIButton()
-    weak var delegateForHabit: CategoryViewControllerDelegateForHabit?
-    weak var delegateForEvent: CategoryViewControllerDelegateForEvent?
-    var categoryForTableView: [String] = [
-        "Спорт", "Учёба", "Домашние дела", "Работа"
-    ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,14 +81,14 @@ final class CategoryViewController: UIViewController {
         view.addSubview(placeholderLable)
         view.addSubview(categoryTableView)
         view.addSubview(addCategoryButton)
-
+        
         
         NSLayoutConstraint.activate([
             titleLable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             titleLable.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             titleLable.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             titleLable.heightAnchor.constraint(equalToConstant: 22),
-
+            
             categoryTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 66),
             categoryTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             categoryTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
@@ -131,7 +132,7 @@ extension CategoryViewController: UITableViewDelegate {
         guard let cell = tableView.cellForRow(at: indexPath) as? CategoryTableViewСеll else {
             assertionFailure("Не удалось выполнить приведение к CategoryTableViewСеll")
             return
-            }
+        }
         cell.showOrHideDoneImg()
         
         if delegateForHabit == nil {
@@ -152,15 +153,15 @@ extension CategoryViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryTableViewСеll.identifer, for: indexPath) as? CategoryTableViewСеll else {
             assertionFailure("Не удалось выполнить приведение к CategoryTableViewСеll")
             return UITableViewCell()
-            }
+        }
         
         let category = categoryForTableView[indexPath.row]
         cell.configureCell(textLable: category)
         cell.backgroundColor = .ypBackground
         return cell
-        }
-    
     }
+    
+}
 
 extension CategoryViewController: CreateCategoryViewControllerDelegate {
     func createNewCategory(newCategory: String) {

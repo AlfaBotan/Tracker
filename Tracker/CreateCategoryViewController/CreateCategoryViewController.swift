@@ -13,11 +13,13 @@ protocol CreateCategoryViewControllerDelegate: AnyObject {
 
 final class CreateCategoryViewController: UIViewController {
     
+    weak var delegate: CreateCategoryViewControllerDelegate?
+
     private lazy var titleLable = UILabel()
     private lazy var categoryTextField = UITextField()
     private lazy var doneButton = UIButton()
     private var textFromTextField: String?
-    weak var delegate: CreateCategoryViewControllerDelegate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite

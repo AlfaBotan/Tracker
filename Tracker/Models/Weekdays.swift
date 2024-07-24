@@ -8,41 +8,41 @@
 import Foundation
 
 enum Weekdays: String, CaseIterable {
-    case Monday = "Понедельник"
-    case Tuesday = "Вторник"
-    case Wednesday = "Среда"
-    case Thursday = "Четверг"
-    case Friday = "Пятница"
-    case Saturday = "Суббота"
-    case Sunday = "Воскресенье"
+    case monday = "Понедельник"
+    case tuesday = "Вторник"
+    case wednesday = "Среда"
+    case thursday = "Четверг"
+    case friday = "Пятница"
+    case saturday = "Суббота"
+    case sunday = "Воскресенье"
     
     var calendarDayNumber: Int {
         switch self {
-        case .Sunday: return 1
-        case .Monday: return 2
-        case .Tuesday: return 3
-        case .Wednesday: return 4
-        case .Thursday: return 5
-        case .Friday: return 6
-        case .Saturday: return 7
+        case .sunday: return 1
+        case .monday: return 2
+        case .tuesday: return 3
+        case .wednesday: return 4
+        case .thursday: return 5
+        case .friday: return 6
+        case .saturday: return 7
         }
     }
     
     var shortDayName: String {
         switch self {
-        case .Monday:
+        case .monday:
             return "Пн"
-        case .Tuesday:
+        case .tuesday:
             return "Вт"
-        case .Wednesday:
+        case .wednesday:
             return "Ср"
-        case .Thursday:
+        case .thursday:
             return "Чт"
-        case .Friday:
+        case .friday:
             return "Пт"
-        case .Saturday:
+        case .saturday:
             return "Сб"
-        case .Sunday:
+        case .sunday:
             return "Вс"
         }
     }
