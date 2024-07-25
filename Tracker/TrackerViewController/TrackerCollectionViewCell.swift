@@ -9,12 +9,14 @@ import UIKit
 
 final class TrackerCollectionViewCell: UICollectionViewCell {
     
-    
+    static let Identifier = "TrackerCollectionViewCell"
+
     private lazy var topView = UIView()
     private lazy var smileLabel = UILabel()
     private lazy var descriptionLAble = UILabel()
     private lazy var countDaysLable = UILabel()
     private lazy var plusButton = UIButton()
+    
     private var indexPath: IndexPath?
     private var trackerId: UUID? = nil
     private var isCompleted: Bool = false
@@ -22,7 +24,6 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         addSubviewsAndConstraints()
     }
     

@@ -12,6 +12,7 @@
 		1C1E29BB2C3BE4BB006FB28C /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C1E29BA2C3BE4BB006FB28C /* Tracker.swift */; };
 		1C1E29BD2C3BE4EC006FB28C /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C1E29BC2C3BE4EC006FB28C /* TrackerCategory.swift */; };
 		1C1E29BF2C3C58A0006FB28C /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C1E29BE2C3C58A0006FB28C /* TrackerRecord.swift */; };
+		1C540DD62C527CBF005B3A83 /* HabitAndEventCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C540DD52C527CBE005B3A83 /* HabitAndEventCollectionViewCell.swift */; };
 		1C5592A62C4D9A3700B1C035 /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5592A52C4D9A3700B1C035 /* CategoryViewController.swift */; };
 		1C5592AB2C4DA4F600B1C035 /* CreateCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5592AA2C4DA4F600B1C035 /* CreateCategoryViewController.swift */; };
 		1C5592AD2C4DA67500B1C035 /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C5592AC2C4DA67500B1C035 /* CategoryTableViewCell.swift */; };
@@ -36,6 +37,7 @@
 		1C1E29BA2C3BE4BB006FB28C /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		1C1E29BC2C3BE4EC006FB28C /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		1C1E29BE2C3C58A0006FB28C /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
+		1C540DD52C527CBE005B3A83 /* HabitAndEventCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitAndEventCollectionViewCell.swift; sourceTree = "<group>"; };
 		1C5592A52C4D9A3700B1C035 /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
 		1C5592AA2C4DA4F600B1C035 /* CreateCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCategoryViewController.swift; sourceTree = "<group>"; };
 		1C5592AC2C4DA67500B1C035 /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
@@ -72,6 +74,7 @@
 			children = (
 				1C1C58F42C516E7100C4321F /* HabitAndEventViewController.swift */,
 				1C5592B62C4EE76000B1C035 /* HabitAndEventTableViewСеll.swift */,
+				1C540DD52C527CBE005B3A83 /* HabitAndEventCollectionViewCell.swift */,
 			);
 			path = HabitAndEventVIewController;
 			sourceTree = "<group>";
@@ -129,15 +132,15 @@
 		1C5B65D12C347CC5002B4541 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
-				1C1C58F32C516E4700C4321F /* HabitAndEventVIewController */,
 				1C5B65EB2C35AFAC002B4541 /* TabBatController */,
 				1C5B65EC2C35AFBF002B4541 /* TrackerViewController */,
 				1C5B65EA2C35AF88002B4541 /* StatisticViewController */,
-				1C5592A82C4D9A7F00B1C035 /* WeekdaysViewController */,
+				1C55929B2C4BEC9F00B1C035 /* TrackerTypeSelectionViewController */,
+				1C1C58F32C516E4700C4321F /* HabitAndEventVIewController */,
 				1C5592A72C4D9A5C00B1C035 /* CategoryViewController */,
 				1C5592A92C4DA4D500B1C035 /* CreateCategoryViewController */,
+				1C5592A82C4D9A7F00B1C035 /* WeekdaysViewController */,
 				1CB36D0F2C44559E00F2BCF0 /* Models */,
-				1C55929B2C4BEC9F00B1C035 /* TrackerTypeSelectionViewController */,
 				1C5B65D22C347CC5002B4541 /* AppDelegate.swift */,
 				1C5B65D42C347CC5002B4541 /* SceneDelegate.swift */,
 				1C5B65DB2C347CC7002B4541 /* Assets.xcassets */,
@@ -266,6 +269,7 @@
 				1CCCF3AB2C459D9B00F38C8B /* SupplementaryView.swift in Sources */,
 				1C1C58F52C516E7100C4321F /* HabitAndEventViewController.swift in Sources */,
 				1C5B65D32C347CC5002B4541 /* AppDelegate.swift in Sources */,
+				1C540DD62C527CBF005B3A83 /* HabitAndEventCollectionViewCell.swift in Sources */,
 				1C5592AB2C4DA4F600B1C035 /* CreateCategoryViewController.swift in Sources */,
 				1C5592B72C4EE76000B1C035 /* HabitAndEventTableViewСеll.swift in Sources */,
 				1C5B65E92C35AF7F002B4541 /* StatisticViewController.swift in Sources */,
