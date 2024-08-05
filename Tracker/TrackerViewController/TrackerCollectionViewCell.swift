@@ -9,6 +9,7 @@ import UIKit
 
 final class TrackerCollectionViewCell: UICollectionViewCell {
     
+    private let coreDataManager = CoreDataManager.shared
     static let Identifier = "TrackerCollectionViewCell"
 
     private lazy var topView = UIView()
@@ -108,7 +109,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         topView.backgroundColor = color
         plusButton.backgroundColor = color
         plusButton.alpha = isCompleted ? 0.3 : 1
-        if isCompleted{
+        if isCompleted {
             plusButton.setImage(UIImage(named: "done"), for: .normal)
         } else {
             plusButton.setImage(UIImage(systemName: "plus"), for: .normal)

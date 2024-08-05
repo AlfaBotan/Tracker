@@ -169,10 +169,10 @@ final class HabitAndEventViewController: UIViewController {
         var tracker: Tracker
         if let text = nameTrackerTextField.text {
             if trackerType == .habit {
-                tracker = Tracker(Identifier: UUID(), name: text, color: color, emoji: emoji, timetable: weekDaysArrayForTracker)
+                tracker = Tracker(identifier: UUID(), name: text, color: color, emoji: emoji, timetable: weekDaysArrayForTracker)
             } else {
                 weekDaysArrayForTracker = [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
-                tracker = Tracker(Identifier: UUID(), name: text, color: color, emoji: emoji, timetable: weekDaysArrayForTracker)
+                tracker = Tracker(identifier: UUID(), name: text, color: color, emoji: emoji, timetable: weekDaysArrayForTracker)
             }
             delegate?.didCreateTracker(category: categoryForTracker, tracker: tracker)
         }
