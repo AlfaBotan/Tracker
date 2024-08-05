@@ -44,9 +44,9 @@ final class TrackerViewController: UIViewController {
 //        coreDataManager.removeAllTrackers()
 //        coreDataManager.removeAllTrackerCategory()
         
-        mockTrackers = coreDataManager.getTrackerCategoryFromDB()
+        visibleTrackers = coreDataManager.getTrackersForWeekday(Weekdays.fromDate(selectedDate))
+        showOrHideCollection()
         addAllSubView()
-        filterTrackers(for: Date())
     }
     
     private func addPlusButton() {
@@ -177,7 +177,9 @@ final class TrackerViewController: UIViewController {
     
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
         selectedDate = sender.date
-        filterTrackers(for: sender.date)
+        visibleTrackers = coreDataManager.getTrackersForWeekday(Weekdays.fromDate(selectedDate))
+        showOrHideCollection()
+        collectionView.reloadData()
     }
     
     func getDayOfWeek(from date: Date) -> Weekdays? {
@@ -187,15 +189,6 @@ final class TrackerViewController: UIViewController {
         return Weekdays.allCases.first { $0.calendarDayNumber == weekday }
     }
     
-    func filterTrackers(for date: Date) {
-        guard let dayOfWeek = getDayOfWeek(from: date) else { return }
-        visibleTrackers = mockTrackers.map { category in
-            let filteredTrackers = category.trackers.filter { $0.timetable.contains(dayOfWeek) }
-            return TrackerCategory(title: category.title, trackers: filteredTrackers)
-        }.filter { !$0.trackers.isEmpty }
-        showOrHideCollection()
-        collectionView.reloadData()
-    }
     
     func isTrackerCompleted(_ tracker: Tracker, for date: Date) -> Bool {
         return coreDataManager.isTrackerCompleted(identifier: tracker.identifier, date: date)
@@ -253,7 +246,7 @@ extension TrackerViewController: UICollectionViewDataSource {
             assertionFailure("Не удалось выполнить приведение к SupplementaryView")
             return UICollectionReusableView()
         }
-        view.titleLabel.text = mockTrackers[indexPath.section].title
+        view.titleLabel.text = visibleTrackers[indexPath.section].title
         return view
     }
 }
@@ -300,11 +293,9 @@ extension TrackerViewController: TrackerCollectionViewCellDelegate {
 
                do {
                    if isTrackerCompleted(tracker, for: selectedDate) {
-                       // Удаление записи
                        coreDataManager.removeTrackerRecord(identifier: tracker.identifier, date: selectedDate)
                        print("Удаляем")
                    } else {
-                       // Добавление записи
                        try coreDataManager.addTrackerRecord(identifier: tracker.identifier, date: selectedDate)
                        print("добавляем")
                    }
@@ -323,16 +314,9 @@ extension TrackerViewController: TrackerTypeSelectionViewControllerDelegate {
             print("Не удалось добавить новый трекер в базу данных")
             assertionFailure(error.localizedDescription)
         }
-//        if let categoryIndex = mockTrackers.firstIndex(where: { $0.title == category }) {
-//            var updatedCategory = mockTrackers[categoryIndex]
-//            updatedCategory = TrackerCategory(title: updatedCategory.title, trackers: updatedCategory.trackers + [tracker])
-//            mockTrackers[categoryIndex] = updatedCategory
-//        } else {
-//            let newCategory = TrackerCategory(title: category, trackers: [tracker])
-//            mockTrackers.append(newCategory)
-//        }
-        
-        mockTrackers = coreDataManager.getTrackerCategoryFromDB()
-        filterTrackers(for: selectedDate)
+
+        visibleTrackers = coreDataManager.getTrackersForWeekday(Weekdays.fromDate(selectedDate))
+        showOrHideCollection()
+        collectionView.reloadData()
     }
 }

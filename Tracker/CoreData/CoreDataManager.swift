@@ -126,6 +126,49 @@ final class CoreDataManager: NSObject {
         return trackersArray
     }
     
+    func getTrackersForWeekday(_ weekday: String) -> [TrackerCategory] {
+            let fetchRequest: NSFetchRequest<TrackerCD> = TrackerCD.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "timetable CONTAINS %@", weekday)
+            
+            var trackersFromDB: [TrackerCD] = []
+            do {
+                trackersFromDB = try context.fetch(fetchRequest)
+            } catch {
+                print("Ошибка загрузки трекеров для дня недели \(weekday): \(error)")
+                return []
+            }
+            
+            var trackerCategories: [TrackerCategory] = []
+            for trackerCD in trackersFromDB {
+                if let tracker = createTracker(from: trackerCD) {
+                    if let categoryIndex = trackerCategories.firstIndex(where: { $0.title == trackerCD.category?.title }) {
+                        // Создаем новую структуру TrackerCategory с обновленным массивом trackers
+                        let existingCategory = trackerCategories[categoryIndex]
+                        let updatedTrackers = existingCategory.trackers + [tracker]
+                        let updatedCategory = TrackerCategory(title: existingCategory.title, trackers: updatedTrackers)
+                        
+                        // Заменяем старую категорию на новую в массиве trackerCategories
+                        trackerCategories[categoryIndex] = updatedCategory
+                    } else {
+                        let newCategory = TrackerCategory(title: trackerCD.category?.title ?? "Без категории", trackers: [tracker])
+                        trackerCategories.append(newCategory)
+                    }
+                }
+            }
+            
+            return trackerCategories
+        }
+    
+    func getAllTrackersForWeekday(weekDay: String) {
+        let request = TrackerCD.fetchRequest()
+        let predicate1 = NSPredicate(format: "schedule CONTAINS %@", weekDay)
+        request.predicate = predicate1
+        
+        let sort = NSSortDescriptor(key: "category.header", ascending: true)
+        request.sortDescriptors = [sort]
+        
+    }
+    
     func getTrackerCategoryFromDB() -> [TrackerCategory] {
         var trackerCategoryesArray: [TrackerCategory] = []
         let request = trackerCategoryStore.fetchRequest()
