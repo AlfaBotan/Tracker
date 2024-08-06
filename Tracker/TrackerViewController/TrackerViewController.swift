@@ -36,15 +36,14 @@ final class TrackerViewController: UIViewController {
     private var selectedDate: Date = Date()
     private let currentDate: Date = Date()
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite
-//        coreDataManager.removeAllTrackerRecords()
-//        coreDataManager.removeAllTrackers()
-//        coreDataManager.removeAllTrackerCategory()
-        
-        visibleTrackers = coreDataManager.getTrackersForWeekday(Weekdays.fromDate(selectedDate))
+        //                coreDataManager.removeAllTrackerRecords()
+        //                coreDataManager.removeAllTrackers()
+        //                coreDataManager.removeAllTrackerCategory()
+        coreDataManager.delegate = self
+        coreDataManager.configureFetchedResultsController(for: Weekdays.fromDate(selectedDate))
         showOrHideCollection()
         addAllSubView()
     }
@@ -177,9 +176,7 @@ final class TrackerViewController: UIViewController {
     
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
         selectedDate = sender.date
-        visibleTrackers = coreDataManager.getTrackersForWeekday(Weekdays.fromDate(selectedDate))
-        showOrHideCollection()
-        collectionView.reloadData()
+        coreDataManager.configureFetchedResultsController(for: Weekdays.fromDate(selectedDate))
     }
     
     func getDayOfWeek(from date: Date) -> Weekdays? {
@@ -225,7 +222,7 @@ extension TrackerViewController: UICollectionViewDataSource {
         let completionCount2 = coreDataManager.getTrackerRecords(by: tracker.identifier).count
         let isCompleteToday = isTrackerCompleted(tracker, for: selectedDate)
         print("\(isCompleteToday)")
-
+        
         cell.configCell(id: tracker.identifier, name: tracker.name, color: tracker.color, emoji: tracker.emoji, completedDays: completionCount2, isEnabled: true, isCompleted: isCompleteToday, indexPath: indexPath)
         cell.delegate = self
         return cell
@@ -289,33 +286,32 @@ extension TrackerViewController: TrackerCollectionViewCellDelegate {
         }
         
         guard let indexPath = collectionView.indexPath(for: cell) else { return }
-               let tracker = visibleTrackers[indexPath.section].trackers[indexPath.row]
-
-               do {
-                   if isTrackerCompleted(tracker, for: selectedDate) {
-                       coreDataManager.removeTrackerRecord(identifier: tracker.identifier, date: selectedDate)
-                       print("Удаляем")
-                   } else {
-                       try coreDataManager.addTrackerRecord(identifier: tracker.identifier, date: selectedDate)
-                       print("добавляем")
-                   }
-                   collectionView.reloadItems(at: [indexPath])
-               } catch {
-                   print("Ошибка при обновлении состояния трекера: \(error)")
-               }
+        let tracker = visibleTrackers[indexPath.section].trackers[indexPath.row]
+        
+        do {
+            if isTrackerCompleted(tracker, for: selectedDate) {
+                coreDataManager.removeTrackerRecord(identifier: tracker.identifier, date: selectedDate)
+                print("Удаляем")
+            } else {
+                try coreDataManager.addTrackerRecord(identifier: tracker.identifier, date: selectedDate)
+                print("добавляем")
+            }
+            collectionView.reloadItems(at: [indexPath])
+        } catch {
+            print("Ошибка при обновлении состояния трекера: \(error)")
+        }
     }
 }
 
 extension TrackerViewController: TrackerTypeSelectionViewControllerDelegate {
     func addNewTracker(category: String, tracker: Tracker) {
-        do {
-            try coreDataManager.addNewTracker(tracker: tracker, categoryName: category)
-        } catch {
-            print("Не удалось добавить новый трекер в базу данных")
-            assertionFailure(error.localizedDescription)
-        }
+        coreDataManager.addNewTracker(tracker: tracker, categoryName: category)
+    }
+}
 
-        visibleTrackers = coreDataManager.getTrackersForWeekday(Weekdays.fromDate(selectedDate))
+extension TrackerViewController: CoreDataManagerDelegate {
+    func didChangeData(_ data: [TrackerCategory]) {
+        visibleTrackers = data
         showOrHideCollection()
         collectionView.reloadData()
     }

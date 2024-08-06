@@ -11,7 +11,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     
     private let coreDataManager = CoreDataManager.shared
     static let Identifier = "TrackerCollectionViewCell"
-
+    
     private lazy var topView = UIView()
     private lazy var smileLabel = UILabel()
     private lazy var descriptionLAble = UILabel()
