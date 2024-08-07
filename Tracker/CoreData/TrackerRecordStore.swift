@@ -20,7 +20,7 @@ final class TrackerRecordStore {
         self.context = context
     }
 
-    func fetchRequest() -> NSFetchRequest<TrackerRecordCD> {
+   private func fetchRequest() -> NSFetchRequest<TrackerRecordCD> {
         return NSFetchRequest<TrackerRecordCD>(entityName: "TrackerRecordCD")
     }
 }

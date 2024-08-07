@@ -20,22 +20,7 @@ final class TrackerCategoryStore {
         self.context = context
     }
     
-    func addNewTrackerCategory(_ trackerCategory: TrackerCategory) throws {
-        let trackerCategoryForDB = TrackerCategoryCD(context: context)
-        var trackers: [TrackerCD] = []
-        //TODO: Инициализировать Категорию
-        trackerCategoryForDB.title = trackerCategory.title
-        for i in trackerCategory.trackers {
-            let trackerForDB = trackerStore.createNewTracker(tracker: i, category: trackerCategoryForDB)
-            trackers.append(trackerForDB)
-            trackerForDB.category = trackerCategoryForDB
-            trackerCategoryForDB.addToTrackers(trackerForDB)
-        }
-        
-        try context.save()
-    }
-    
-    func fetchRequest() -> NSFetchRequest<TrackerCategoryCD> {
+   private func fetchRequest() -> NSFetchRequest<TrackerCategoryCD> {
         return NSFetchRequest<TrackerCategoryCD>(entityName: "TrackerCategoryCD")
     }
 }

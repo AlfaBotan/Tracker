@@ -38,7 +38,7 @@ final class CoreDataManager: NSObject {
     private var fetchedResultsController: NSFetchedResultsController<TrackerCD>!
     
     func configureFetchedResultsController(for weekday: String) {
-        let fetchRequest: NSFetchRequest<TrackerCD> = TrackerCD.fetchRequest()
+        let fetchRequest = NSFetchRequest<TrackerCD>(entityName: "TrackerCD")
         fetchRequest.predicate = NSPredicate(format: "timetable CONTAINS %@", weekday)
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "category.title", ascending: true)]
         // Если FRC ещё не был инициализирован, создаем его
@@ -71,7 +71,7 @@ final class CoreDataManager: NSObject {
     
     func addNewTracker(tracker: Tracker, categoryName: String) {
         // Найти или создать категорию
-        let fetchRequest: NSFetchRequest<TrackerCategoryCD> = TrackerCategoryCD.fetchRequest()
+        let fetchRequest = NSFetchRequest<TrackerCategoryCD>(entityName: "TrackerCategoryCD")
         fetchRequest.predicate = NSPredicate(format: "title == %@", categoryName)
         var categories: [TrackerCategoryCD] = []
         do {
@@ -106,7 +106,7 @@ final class CoreDataManager: NSObject {
         }
     }
     
-    func createTracker(from trackerCD: TrackerCD) -> Tracker? {
+    private func createTracker(from trackerCD: TrackerCD) -> Tracker? {
         guard let trackerID = trackerCD.identifier,
               let trackerName = trackerCD.name,
               let trackerColorString = trackerCD.color,
@@ -131,7 +131,7 @@ final class CoreDataManager: NSObject {
     }
     
     func removeTrackerRecord(identifier: UUID, date: Date) {
-        let fetchRequest: NSFetchRequest<TrackerRecordCD> = TrackerRecordCD.fetchRequest()
+        let fetchRequest = NSFetchRequest<TrackerRecordCD>(entityName: "TrackerRecordCD")
         let startOfDay = Calendar.current.startOfDay(for: date)
         
         fetchRequest.predicate = NSPredicate(format: "identifier == %@ AND date == %@", identifier as CVarArg, startOfDay as NSDate)
@@ -148,7 +148,7 @@ final class CoreDataManager: NSObject {
     }
     
     func getTrackerRecords(by identifier: UUID) -> [TrackerRecord] {
-        let fetchRequest = trackerRecordStore.fetchRequest()
+        let fetchRequest = NSFetchRequest<TrackerRecordCD>(entityName: "TrackerRecordCD")
         fetchRequest.predicate = NSPredicate(format: "identifier == %@", identifier as CVarArg)
         var trackerRecords: [TrackerRecord] = []
         var trackerRecordsCD: [TrackerRecordCD] = []
@@ -167,7 +167,7 @@ final class CoreDataManager: NSObject {
     }
     
     func isTrackerCompleted(identifier: UUID, date: Date) -> Bool {
-        let fetchRequest: NSFetchRequest<TrackerRecordCD> = TrackerRecordCD.fetchRequest()
+        let fetchRequest = NSFetchRequest<TrackerRecordCD>(entityName: "TrackerRecordCD")
         let startOfDay = Calendar.current.startOfDay(for: date)
         
         fetchRequest.predicate = NSPredicate(format: "identifier == %@ AND date == %@", identifier as CVarArg, startOfDay as NSDate)
@@ -215,7 +215,7 @@ extension CoreDataManager: NSFetchedResultsControllerDelegate {
         return trackerCategories
     }
     
-    func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+    internal func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         print("Did change object")
     }
 }
