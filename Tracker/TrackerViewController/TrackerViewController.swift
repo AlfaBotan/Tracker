@@ -306,7 +306,6 @@ extension TrackerViewController: TrackerCollectionViewCellDelegate {
 extension TrackerViewController: TrackerTypeSelectionViewControllerDelegate {
     func addNewTracker(category: String, tracker: Tracker) {
         coreDataManager.addNewTracker(tracker: tracker, categoryName: category)
-        coreDataManager.
     }
 }
 
