@@ -14,6 +14,9 @@ protocol TrackerCollectionViewCellDelegate: AnyObject {
 final class TrackerViewController: UIViewController {
     
     private let coreDataManager = CoreDataManager.shared
+    private let trackerStore = TrackerStore()
+    private let trackerCategoryStore = TrackerCategoryStore()
+    private let trackerRecordStore = TrackerRecordStore()
     
     private lazy var plusButton = UIButton()
     private lazy var datePicker = UIDatePicker()
@@ -39,9 +42,6 @@ final class TrackerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite
-        //                coreDataManager.removeAllTrackerRecords()
-        //                coreDataManager.removeAllTrackers()
-        //                coreDataManager.removeAllTrackerCategory()
         coreDataManager.delegate = self
         coreDataManager.configureFetchedResultsController(for: Weekdays.fromDate(selectedDate))
         showOrHideCollection()
@@ -188,7 +188,7 @@ final class TrackerViewController: UIViewController {
     
     
     func isTrackerCompleted(_ tracker: Tracker, for date: Date) -> Bool {
-        return coreDataManager.isTrackerCompleted(identifier: tracker.identifier, date: date)
+        return trackerRecordStore.isTrackerCompleted(identifier: tracker.identifier, date: date)
     }
     
     private func showOrHideCollection() {
@@ -219,7 +219,7 @@ extension TrackerViewController: UICollectionViewDataSource {
         
         let tracker = visibleTrackers[indexPath.section].trackers[indexPath.row]
         
-        let completionCount2 = coreDataManager.getTrackerRecords(by: tracker.identifier).count
+        let completionCount2 = trackerRecordStore.getTrackerRecords(by: tracker.identifier).count
         let isCompleteToday = isTrackerCompleted(tracker, for: selectedDate)
         print("\(isCompleteToday)")
         
@@ -290,10 +290,10 @@ extension TrackerViewController: TrackerCollectionViewCellDelegate {
         
         do {
             if isTrackerCompleted(tracker, for: selectedDate) {
-                coreDataManager.removeTrackerRecord(identifier: tracker.identifier, date: selectedDate)
+                trackerRecordStore.removeTrackerRecord(identifier: tracker.identifier, date: selectedDate)
                 print("Удаляем")
             } else {
-                try coreDataManager.addTrackerRecord(identifier: tracker.identifier, date: selectedDate)
+                try trackerRecordStore.addTrackerRecord(identifier: tracker.identifier, date: selectedDate)
                 print("добавляем")
             }
             collectionView.reloadItems(at: [indexPath])
@@ -305,7 +305,7 @@ extension TrackerViewController: TrackerCollectionViewCellDelegate {
 
 extension TrackerViewController: TrackerTypeSelectionViewControllerDelegate {
     func addNewTracker(category: String, tracker: Tracker) {
-        coreDataManager.addNewTracker(tracker: tracker, categoryName: category)
+        trackerStore.addNewTracker(tracker: tracker, categoryName: category)
     }
 }
 
