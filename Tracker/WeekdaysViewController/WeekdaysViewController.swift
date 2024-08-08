@@ -24,7 +24,6 @@ final class WeekdaysViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("viewDidLoad")
         view.backgroundColor = .ypWhite
         weekdaysTableView.dataSource = self
         weekdaysTableView.delegate = self
