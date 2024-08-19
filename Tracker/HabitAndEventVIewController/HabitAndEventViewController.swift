@@ -7,17 +7,14 @@
 
 import UIKit
 
-protocol HabitAndEventViewControllerDelegate: AnyObject {
-    func didCreateTracker(category: String, tracker: Tracker)
-}
-
 final class HabitAndEventViewController: UIViewController {
     enum TrackerType {
         case habit
         case event
     }
-    weak var delegate: HabitAndEventViewControllerDelegate?
+    private let trackerStore = TrackerStore()
     var trackerType: TrackerType = .habit
+    
     var colorForTracer: UIColor?
     var emojiForTracker: String?
     var weekDaysArrayForTracker: [Weekdays] = []
@@ -35,7 +32,7 @@ final class HabitAndEventViewController: UIViewController {
     
     private var selectedEmojiIndexPath: IndexPath?
     private var selectedColorIndexPath: IndexPath?
-
+    
     private lazy var scrollView = UIScrollView()
     private lazy var contentView = UIView()
     private lazy var titleLabel = UILabel()
@@ -55,6 +52,7 @@ final class HabitAndEventViewController: UIViewController {
         trackerTableView.dataSource = self
         trackerTableView.delegate = self
         configureSubviews()
+        setupToHideKeyboardOnTapOnView()
     }
     
     private func configureSubviews() {
@@ -76,6 +74,7 @@ final class HabitAndEventViewController: UIViewController {
         nameTrackerTextField.leftViewMode = .always
         nameTrackerTextField.clearButtonMode = .whileEditing
         nameTrackerTextField.addTarget(self, action: #selector(editingChanged), for: .editingChanged)
+        nameTrackerTextField.delegate = self
         
         trackerTableView.register(HabitAndEventTableViewСеll.self, forCellReuseIdentifier: HabitAndEventTableViewСеll.identifer)
         trackerTableView.separatorStyle = .singleLine
@@ -126,7 +125,7 @@ final class HabitAndEventViewController: UIViewController {
         contentView.addSubview(collectionView)
         contentView.addSubview(createButton)
         contentView.addSubview(cancelButton)
-
+        
         NSLayoutConstraint.activate([
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
@@ -185,7 +184,7 @@ final class HabitAndEventViewController: UIViewController {
     }
     
     @objc private func createButtonIsClicked() {
-        dismiss(animated: true)
+        self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
         guard let color = colorForTracer, let emoji = emojiForTracker else {return}
         var tracker: Tracker
         if let text = nameTrackerTextField.text {
@@ -195,7 +194,8 @@ final class HabitAndEventViewController: UIViewController {
                 weekDaysArrayForTracker = [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
                 tracker = Tracker(identifier: UUID(), name: text, color: color, emoji: emoji, timetable: weekDaysArrayForTracker)
             }
-            delegate?.didCreateTracker(category: categoryForTracker, tracker: tracker)
+            trackerStore.addNewTracker(tracker: tracker, categoryName: categoryForTracker)
+            
         }
     }
     
@@ -209,13 +209,22 @@ final class HabitAndEventViewController: UIViewController {
         }
     }
 }
+//MARK: UITextFieldDelegate
+extension HabitAndEventViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
+    }
+}
 
 //MARK: UITableViewDelegate
 extension HabitAndEventViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 0 {
-            let viewController = CategoryViewController()
-            viewController.delegateForHabit = self
+            let viewModel = CategoryViewModel()
+            viewModel.delegate = self
+            let viewController = CategoryViewController(categoryViewModel: viewModel)
             present(viewController, animated: true)
         } else if trackerType == .habit && indexPath.row == 1 {
             let viewController = WeekdaysViewController()
@@ -353,6 +362,7 @@ extension HabitAndEventViewController: UICollectionViewDelegateFlowLayout {
 
 extension HabitAndEventViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
         if indexPath.section == 0 {
             if let selectedEmojiIndexPath = selectedEmojiIndexPath, let previousCell = collectionView.cellForItem(at: selectedEmojiIndexPath) as? HabitAndEventCollectionViewCell {
                 previousCell.deselectEmoji()
@@ -362,7 +372,8 @@ extension HabitAndEventViewController: UICollectionViewDelegate {
             if let cell = collectionView.cellForItem(at: indexPath) as? HabitAndEventCollectionViewCell {
                 cell.selectEmoji()
             }
-        } else {
+        }
+        else if indexPath.section == 1 {
             if let selectedColorIndexPath = selectedColorIndexPath, let previousCell = collectionView.cellForItem(at: selectedColorIndexPath) as? HabitAndEventCollectionViewCell {
                 previousCell.deselectColor()
             }
@@ -374,20 +385,11 @@ extension HabitAndEventViewController: UICollectionViewDelegate {
             }
         }
         updateCreateButtonState()
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        guard let cell = collectionView.cellForItem(at: indexPath) as? HabitAndEventCollectionViewCell else {return}
-        if indexPath.section == 0 {
-            cell.deselectEmoji()
-        } else {
-            cell.deselectColor()
-        }
-        updateCreateButtonState()
+        
     }
 }
 
-extension HabitAndEventViewController: CategoryViewControllerDelegateForHabit {
+extension HabitAndEventViewController: CategoryViewModelDelegate {
     func categoryIsPicket(category: String) {
         categoryForTracker = category
         trackerTableView.reloadData()

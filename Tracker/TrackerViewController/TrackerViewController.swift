@@ -25,14 +25,6 @@ final class TrackerViewController: UIViewController {
     private lazy var placeholder = UIImageView()
     private lazy var placeholderLable = UILabel()
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-    private let emojies = [ "🍇", "🍈", "🍉", "🍊", "🍋", "🍌", "🍍", "🥭", "🍎", "🍏", "🍐", "🍒", "🍓", "🫐", "🥝", "🍅", "🫒", "🥥", "🥑", "🍆", "🥔", "🥕", "🌽", "🌶️", "🫑", "🥒", "🥬", "🥦", "🧄", "🧅", "🍄"]
-    private var mockTrackers: [TrackerCategory] = [
-        TrackerCategory(title: "Спорт", trackers: [
-            Tracker(identifier: UUID(), name: "Бег по утрам", color: .ypColor8, emoji: "😊", timetable: [.monday, .wednesday]),
-            Tracker(identifier: UUID(), name: "Тренажёрный зал", color: .ypColor4, emoji: "🍅", timetable: [.tuesday, .thursday, .saturday])]),
-        TrackerCategory(title: "Учёба", trackers: [
-            Tracker(identifier: UUID(), name: "Програмирование", color: .ypColor1, emoji: "🫐", timetable: [.sunday, .monday, .tuesday])])
-    ]
     
     private var completedTrackers: [TrackerRecord] = []
     private var visibleTrackers: [TrackerCategory] = []
@@ -46,6 +38,10 @@ final class TrackerViewController: UIViewController {
         coreDataManager.configureFetchedResultsController(for: Weekdays.fromDate(selectedDate))
         showOrHideCollection()
         addAllSubView()
+        setupToHideKeyboardOnTapOnView()
+        trackerStore.removeAllTrackers()
+        trackerRecordStore.removeAllTrackerRecords()
+        trackerCategoryStore.removeAllTrackerCategory()
     }
     
     private func addPlusButton() {
@@ -59,7 +55,6 @@ final class TrackerViewController: UIViewController {
     @objc
     private func plusButtonPress() {
         let viewController = TrackerTypeSelectionViewController()
-        viewController.delegate = self
         present(viewController, animated: true)
     }
     
@@ -101,6 +96,7 @@ final class TrackerViewController: UIViewController {
         searchField.leftViewMode = .unlessEditing
         searchField.leftViewMode = .always
         searchField.clearButtonMode = .whileEditing
+        searchField.delegate = self
         
         
         searchField.translatesAutoresizingMaskIntoConstraints = false
@@ -220,9 +216,7 @@ extension TrackerViewController: UICollectionViewDataSource {
         let tracker = visibleTrackers[indexPath.section].trackers[indexPath.row]
         
         let completionCount2 = trackerRecordStore.getTrackerRecords(by: tracker.identifier).count
-        let isCompleteToday = isTrackerCompleted(tracker, for: selectedDate)
-        print("\(isCompleteToday)")
-        
+        let isCompleteToday = isTrackerCompleted(tracker, for: selectedDate)        
         cell.configCell(id: tracker.identifier, name: tracker.name, color: tracker.color, emoji: tracker.emoji, completedDays: completionCount2, isEnabled: true, isCompleted: isCompleteToday, indexPath: indexPath)
         cell.delegate = self
         return cell
@@ -258,7 +252,6 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        // Устанавливаем отступы от границ экрана до ячеек
         let leftAndRightInset: CGFloat = 16
         return UIEdgeInsets(top: 0, left: leftAndRightInset, bottom: 0, right: leftAndRightInset)
     }
@@ -303,16 +296,17 @@ extension TrackerViewController: TrackerCollectionViewCellDelegate {
     }
 }
 
-extension TrackerViewController: TrackerTypeSelectionViewControllerDelegate {
-    func addNewTracker(category: String, tracker: Tracker) {
-        trackerStore.addNewTracker(tracker: tracker, categoryName: category)
-    }
-}
-
 extension TrackerViewController: CoreDataManagerDelegate {
     func didChangeData(_ data: [TrackerCategory]) {
         visibleTrackers = data
         showOrHideCollection()
         collectionView.reloadData()
+    }
+}
+
+extension TrackerViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
     }
 }

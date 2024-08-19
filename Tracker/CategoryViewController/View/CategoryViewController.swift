@@ -7,27 +7,24 @@
 
 import UIKit
 
-protocol CategoryViewControllerDelegateForHabit: AnyObject {
-    func categoryIsPicket(category: String)
-}
-
-protocol CategoryViewControllerDelegateForEvent: AnyObject {
-    func categoryIsPicket(category: String)
-}
-
 final class CategoryViewController: UIViewController {
-    var categoryForTableView: [String] = [
-        "Спорт", "Учёба", "Домашние дела", "Работа"
-    ]
     
-    weak var delegateForEvent: CategoryViewControllerDelegateForEvent?
-    weak var delegateForHabit: CategoryViewControllerDelegateForHabit?
+    let categoryViewModel: CategoryViewModel
     
     private lazy var titleLable = UILabel()
     private lazy var categoryTableView = UITableView(frame: .zero)
     private lazy var placeholder = UIImageView()
     private lazy var placeholderLable = UILabel()
     private lazy var addCategoryButton = UIButton()
+    
+    init(categoryViewModel: CategoryViewModel) {
+        self.categoryViewModel = categoryViewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +33,14 @@ final class CategoryViewController: UIViewController {
         categoryTableView.delegate = self
         configureSubviews()
         showOrHideTableView()
+        bindViewModel()
+    }
+    
+    private func bindViewModel() {
+        categoryViewModel.updateTableViewClosure = { [weak self]  in
+            self?.categoryTableView.reloadData()
+            self?.showOrHideTableView()
+        }
     }
     
     private func configureSubviews() {
@@ -43,7 +48,6 @@ final class CategoryViewController: UIViewController {
         titleLable.font = .systemFont(ofSize: 16, weight: .medium)
         titleLable.textAlignment = .center
         titleLable.textColor = .ypBlack
-        
         
         categoryTableView.register(CategoryTableViewСеll.self, forCellReuseIdentifier: CategoryTableViewСеll.identifer)
         categoryTableView.separatorStyle = .singleLine
@@ -112,16 +116,12 @@ final class CategoryViewController: UIViewController {
     }
     
     private func showOrHideTableView() {
-        if categoryForTableView.isEmpty {
-            categoryTableView.isHidden = true
-        } else {
-            categoryTableView.isHidden = false
-        }
+        categoryTableView.isHidden = categoryViewModel.categories.isEmpty
     }
     
     @objc private func addCategoryButtonClicked() {
         let viewController = CreateCategoryViewController()
-        viewController.delegate = self
+        viewController.delegate = self.categoryViewModel
         present(viewController, animated: true)
     }
 }
@@ -134,19 +134,14 @@ extension CategoryViewController: UITableViewDelegate {
             return
         }
         cell.showOrHideDoneImg()
-        
-        if delegateForHabit == nil {
-            delegateForEvent?.categoryIsPicket(category: cell.getChoiсe())
-        } else {
-            delegateForHabit?.categoryIsPicket(category: cell.getChoiсe())
-        }
+        categoryViewModel.categoryIsPicked(category: cell.getChoiсe())
         dismiss(animated: true)
     }
 }
 
 extension CategoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        categoryForTableView.count
+        categoryViewModel.categories.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -154,18 +149,33 @@ extension CategoryViewController: UITableViewDataSource {
             assertionFailure("Не удалось выполнить приведение к CategoryTableViewСеll")
             return UITableViewCell()
         }
-        
-        let category = categoryForTableView[indexPath.row]
+        let category = categoryViewModel.categories[indexPath.row]
         cell.configureCell(textLable: category)
         cell.backgroundColor = .ypBackground
         return cell
     }
     
-}
-
-extension CategoryViewController: CreateCategoryViewControllerDelegate {
-    func createNewCategory(newCategory: String) {
-        categoryForTableView.append(newCategory)
-        categoryTableView.reloadData()
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let totalRows = tableView.numberOfRows(inSection: indexPath.section)
+        if totalRows == 1 {
+            cell.layer.cornerRadius = 16
+            cell.separatorInset = UIEdgeInsets(top: 0, left: cell.bounds.width, bottom: 0, right: 0)
+            return
+        }
+        
+        switch indexPath.row {
+        case 0:
+            cell.layer.cornerRadius = 16
+            cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+            cell.separatorInset = tableView.separatorInset
+        case totalRows - 1:
+            cell.layer.cornerRadius = 16
+            cell.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+            cell.separatorInset = UIEdgeInsets(top: 0, left: cell.bounds.width, bottom: 0, right: 0)
+        default:
+            cell.layer.cornerRadius = 0
+            cell.separatorInset = tableView.separatorInset
+        }
     }
 }
+

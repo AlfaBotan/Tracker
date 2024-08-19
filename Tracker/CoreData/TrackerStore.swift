@@ -16,17 +16,16 @@ final class TrackerStore {
         let context = CoreDataManager.shared.persistentContainer.viewContext
         self.init(context: context)
     }
-
+    
     init(context: NSManagedObjectContext) {
         self.context = context
     }
     
-   private func fetchRequest() -> NSFetchRequest<TrackerCD> {
+    private func fetchRequest() -> NSFetchRequest<TrackerCD> {
         return NSFetchRequest<TrackerCD>(entityName: "TrackerCD")
     }
     
     func addNewTracker(tracker: Tracker, categoryName: String) {
-        // Найти или создать категорию
         let fetchRequest = NSFetchRequest<TrackerCategoryCD>(entityName: "TrackerCategoryCD")
         fetchRequest.predicate = NSPredicate(format: "title == %@", categoryName)
         var categories: [TrackerCategoryCD] = []
@@ -44,7 +43,6 @@ final class TrackerStore {
             category.title = categoryName
         }
         
-        // Создать новый трекер и установить его свойства
         let trackerForDB = TrackerCD(context: context)
         trackerForDB.color = uiColorMarshalling.hexString(from: tracker.color)
         trackerForDB.emoji = tracker.emoji
@@ -52,7 +50,6 @@ final class TrackerStore {
         trackerForDB.timetable = tracker.timetable.toString()
         trackerForDB.name = tracker.name
         
-        // Установить отношение между трекером и категорией
         trackerForDB.category = category
         category.addToTrackers(trackerForDB)
         do {
@@ -79,50 +76,50 @@ final class TrackerStore {
         return tracker
     }
     
-        func removeAllTrackers() {
-            let request = fetchRequest()
-            var trackersFromDB: [TrackerCD] = []
-            do {
-                trackersFromDB = try context.fetch(request)
-            }  catch {
-                print("В базе данных нет трекеров")
-                return
-            }
-            for i in trackersFromDB {
-                context.delete(i)
-            }
-    
-            do {
-                try context.save()
-            } catch {
-                print("Не удалось удалить все записи о выполненных трекерах")
-            }
+    func removeAllTrackers() {
+        let request = fetchRequest()
+        var trackersFromDB: [TrackerCD] = []
+        do {
+            trackersFromDB = try context.fetch(request)
+        }  catch {
+            print("В базе данных нет трекеров")
+            return
         }
+        for i in trackersFromDB {
+            context.delete(i)
+        }
+        
+        do {
+            try context.save()
+        } catch {
+            print("Не удалось удалить все записи о выполненных трекерах")
+        }
+    }
     
-        func getTrackersFromDB() -> [Tracker] {
-            var trackersArray: [Tracker] = []
-            let request = fetchRequest()
-            var trackersFromDB: [TrackerCD] = []
-            do {
-                trackersFromDB = try context.fetch(request)
-            }  catch {
-                print("В базе данных нет трекеров")
-                return []
-            }
-            for i in trackersFromDB {
-                if let newTracker = createTracker(from: i) {
-                    trackersArray.append(newTracker)
-                    print("""
+    func getTrackersFromDB() -> [Tracker] {
+        var trackersArray: [Tracker] = []
+        let request = fetchRequest()
+        var trackersFromDB: [TrackerCD] = []
+        do {
+            trackersFromDB = try context.fetch(request)
+        }  catch {
+            print("В базе данных нет трекеров")
+            return []
+        }
+        for i in trackersFromDB {
+            if let newTracker = createTracker(from: i) {
+                trackersArray.append(newTracker)
+                print("""
                             \(newTracker.name)
                             \(newTracker.emoji)
                             \(newTracker.identifier)
                             \(newTracker.timetable)
                             \(newTracker.color)
                           """)
-                } else {
-                    print("Не удалось создать трекер из TrackerCD")
-                }
+            } else {
+                print("Не удалось создать трекер из TrackerCD")
             }
-            return trackersArray
         }
+        return trackersArray
+    }
 }

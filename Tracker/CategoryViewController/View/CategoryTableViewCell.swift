@@ -27,6 +27,12 @@ final class CategoryTableViewСеll: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        layer.cornerRadius = 0
+        layer.masksToBounds = false
+    }
+    
     func configureSubviews() {
         
         doneImg.isHidden = true
@@ -55,6 +61,7 @@ final class CategoryTableViewСеll: UITableViewCell {
     }
     
     func configureCell(textLable: String) {
+        prepareForReuse()
         categoryLable.text = textLable
     }
     

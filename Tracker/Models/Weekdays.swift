@@ -61,7 +61,7 @@ extension Weekdays {
         case 5: return Weekdays.thursday.rawValue
         case 6: return Weekdays.friday.rawValue
         case 7: return Weekdays.saturday.rawValue
-        default: return Weekdays.sunday.rawValue // на случай, если что-то пойдет не так
+        default: return Weekdays.sunday.rawValue
         }
     }
 }
