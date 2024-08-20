@@ -39,9 +39,6 @@ final class TrackerViewController: UIViewController {
         showOrHideCollection()
         addAllSubView()
         setupToHideKeyboardOnTapOnView()
-        trackerStore.removeAllTrackers()
-        trackerRecordStore.removeAllTrackerRecords()
-        trackerCategoryStore.removeAllTrackerCategory()
     }
     
     private func addPlusButton() {
