@@ -7,18 +7,16 @@
 
 import UIKit
 
-protocol HabitAndEventViewControllerDelegate: AnyObject {
-    func didCreateTracker(category: String, tracker: Tracker)
-}
-
 final class HabitAndEventViewController: UIViewController {
     enum TrackerType {
         case habit
         case event
     }
-    
-    weak var delegate: HabitAndEventViewControllerDelegate?
+    private let trackerStore = TrackerStore()
     var trackerType: TrackerType = .habit
+    
+    var colorForTracer: UIColor?
+    var emojiForTracker: String?
     var weekDaysArrayForTracker: [Weekdays] = []
     var textFieldIsEmpty: Bool = true
     var categoryForTracker: String = ""
@@ -29,12 +27,21 @@ final class HabitAndEventViewController: UIViewController {
         }
         return string
     }
+    private let emojies = [ "🍇", "🍈", "🍉", "🍊", "🍋", "🍌", "🍍", "🥭", "🍎", "🍏", "🍐", "🍒", "🍓", "🫐", "🥝", "🍅", "🫒", "🥥", "🥑", "🍆", "🥔", "🥕", "🌽", "🌶️", "🫑", "🥒", "🥦", "🧄", "🧅", "🍄"]
+    private let colors: [UIColor] = [UIColor(resource: .ypColor1), UIColor(resource: .ypColor2), UIColor(resource: .ypColor3), UIColor(resource: .ypColor4), UIColor(resource: .ypColor5), UIColor(resource: .ypColor6), UIColor(resource: .ypColor7), UIColor(resource: .ypColor8), UIColor(resource: .ypColor9), UIColor(resource: .ypColor10), UIColor(resource: .ypColor11), UIColor(resource: .ypColor12), UIColor(resource: .ypColor13), UIColor(resource: .ypColor14), UIColor(resource: .ypColor15), UIColor(resource: .ypColor16), UIColor(resource: .ypColor17), UIColor(resource: .ypColor18)]
     
+    private var selectedEmojiIndexPath: IndexPath?
+    private var selectedColorIndexPath: IndexPath?
+    
+    private lazy var scrollView = UIScrollView()
+    private lazy var contentView = UIView()
     private lazy var titleLabel = UILabel()
     private lazy var nameTrackerTextField = UITextField()
     private lazy var trackerTableView = UITableView(frame: .zero)
+    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     private lazy var createButton = UIButton()
     private lazy var cancelButton = UIButton(type: .system)
+    
     private var rowsForTableView: [String] {
         return trackerType == .habit ? ["Категория", "Расписание"] : ["Категория"]
     }
@@ -45,9 +52,11 @@ final class HabitAndEventViewController: UIViewController {
         trackerTableView.dataSource = self
         trackerTableView.delegate = self
         configureSubviews()
+        setupToHideKeyboardOnTapOnView()
     }
     
     private func configureSubviews() {
+        scrollView.alwaysBounceVertical = true
         titleLabel.text = trackerType == .habit ? "Новая привычка" : "Новое событие"
         titleLabel.font = .systemFont(ofSize: 16, weight: .medium)
         titleLabel.textAlignment = .center
@@ -65,6 +74,7 @@ final class HabitAndEventViewController: UIViewController {
         nameTrackerTextField.leftViewMode = .always
         nameTrackerTextField.clearButtonMode = .whileEditing
         nameTrackerTextField.addTarget(self, action: #selector(editingChanged), for: .editingChanged)
+        nameTrackerTextField.delegate = self
         
         trackerTableView.register(HabitAndEventTableViewСеll.self, forCellReuseIdentifier: HabitAndEventTableViewСеll.identifer)
         trackerTableView.separatorStyle = .singleLine
@@ -72,6 +82,13 @@ final class HabitAndEventViewController: UIViewController {
         trackerTableView.layer.masksToBounds = true
         trackerTableView.layer.cornerRadius = 16
         trackerTableView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
+        
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(HabitAndEventCollectionViewCell.self, forCellWithReuseIdentifier: HabitAndEventCollectionViewCell.Identifier)
+        collectionView.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
+        collectionView.allowsMultipleSelection = false
+        collectionView.isScrollEnabled = false
         
         createButton.setTitle("Создать", for: .normal)
         createButton.tintColor = .ypWhite
@@ -90,51 +107,76 @@ final class HabitAndEventViewController: UIViewController {
         cancelButton.layer.borderColor = UIColor.ypRed.cgColor
         cancelButton.addTarget(self, action: #selector(cancelButtonIsClicked), for: .touchUpInside)
         
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         nameTrackerTextField.translatesAutoresizingMaskIntoConstraints = false
         trackerTableView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         createButton.translatesAutoresizingMaskIntoConstraints = false
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addSubview(titleLabel)
-        view.addSubview(nameTrackerTextField)
-        view.addSubview(trackerTableView)
-        view.addSubview(createButton)
-        view.addSubview(cancelButton)
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(nameTrackerTextField)
+        contentView.addSubview(trackerTableView)
+        contentView.addSubview(collectionView)
+        contentView.addSubview(createButton)
+        contentView.addSubview(cancelButton)
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             titleLabel.heightAnchor.constraint(equalToConstant: 22),
             
             nameTrackerTextField.heightAnchor.constraint(equalToConstant: 75),
-            nameTrackerTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            nameTrackerTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            nameTrackerTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            nameTrackerTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             nameTrackerTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24),
             
-            trackerTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            trackerTableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             trackerTableView.topAnchor.constraint(equalTo: nameTrackerTextField.bottomAnchor, constant: 24),
-            trackerTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            trackerTableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             trackerTableView.heightAnchor.constraint(equalToConstant: trackerType == .habit ? 150 : 75),
             
-            cancelButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 1),
+            collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            collectionView.topAnchor.constraint(equalTo: trackerTableView.bottomAnchor),
+            collectionView.heightAnchor.constraint(equalToConstant: 700),
+            
+            cancelButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            cancelButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor),
             cancelButton.heightAnchor.constraint(equalToConstant: 60),
             cancelButton.widthAnchor.constraint(equalToConstant: 160),
+            cancelButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
-            createButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            createButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            createButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            createButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor),
             createButton.heightAnchor.constraint(equalToConstant: 60),
             createButton.widthAnchor.constraint(equalToConstant: 160),
+            createButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
     }
     
     @objc private func editingChanged() {
         if let text = nameTrackerTextField.text, !text.isEmpty {
             textFieldIsEmpty = false
-            updateCreateButtonState()
         }
+        updateCreateButtonState()
     }
     
     @objc private func cancelButtonIsClicked() {
@@ -142,21 +184,23 @@ final class HabitAndEventViewController: UIViewController {
     }
     
     @objc private func createButtonIsClicked() {
-        dismiss(animated: true)
+        self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
+        guard let color = colorForTracer, let emoji = emojiForTracker else {return}
         var tracker: Tracker
         if let text = nameTrackerTextField.text {
             if trackerType == .habit {
-                tracker = Tracker(Identifier: UUID(), name: text, color: .ypColor4, emoji: "🍄", timetable: weekDaysArrayForTracker)
+                tracker = Tracker(identifier: UUID(), name: text, color: color, emoji: emoji, timetable: weekDaysArrayForTracker)
             } else {
                 weekDaysArrayForTracker = [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
-                tracker = Tracker(Identifier: UUID(), name: text, color: .ypColor4, emoji: "🍄", timetable: weekDaysArrayForTracker)
+                tracker = Tracker(identifier: UUID(), name: text, color: color, emoji: emoji, timetable: weekDaysArrayForTracker)
             }
-            delegate?.didCreateTracker(category: categoryForTracker, tracker: tracker)
+            trackerStore.addNewTracker(tracker: tracker, categoryName: categoryForTracker)
+            
         }
     }
     
     internal func updateCreateButtonState() {
-        if textFieldIsEmpty == false, (trackerType == .event || !weekDaysArrayForTracker.isEmpty), !categoryForTracker.isEmpty {
+        if textFieldIsEmpty == false, (trackerType == .event || !weekDaysArrayForTracker.isEmpty), !categoryForTracker.isEmpty, colorForTracer != nil, emojiForTracker != nil {
             createButton.isEnabled = true
             createButton.backgroundColor = .ypBlack
         } else {
@@ -165,12 +209,22 @@ final class HabitAndEventViewController: UIViewController {
         }
     }
 }
+//MARK: UITextFieldDelegate
+extension HabitAndEventViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
+    }
+}
 
+//MARK: UITableViewDelegate
 extension HabitAndEventViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 0 {
-            let viewController = CategoryViewController()
-            viewController.delegateForHabit = self
+            let viewModel = CategoryViewModel()
+            viewModel.delegate = self
+            let viewController = CategoryViewController(categoryViewModel: viewModel)
             present(viewController, animated: true)
         } else if trackerType == .habit && indexPath.row == 1 {
             let viewController = WeekdaysViewController()
@@ -181,6 +235,8 @@ extension HabitAndEventViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }
+
+//MARK: UITableViewDataSource
 
 extension HabitAndEventViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -208,8 +264,132 @@ extension HabitAndEventViewController: UITableViewDataSource {
     }
 }
 
-extension HabitAndEventViewController: CategoryViewControllerDelegateForHabit {
-    func categoryIsPicket(category: String) {
+//MARK: UICollectionViewDataSource
+
+extension HabitAndEventViewController: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        2
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if section == 0 {
+            return emojies.count
+        } else if section == 1 {
+            return colors.count
+        }
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HabitAndEventCollectionViewCell.Identifier, for: indexPath) as? HabitAndEventCollectionViewCell
+        else {
+            print("Не прошёл каст к HabitAndEventCollectionViewCell")
+            return UICollectionViewCell()
+        }
+        
+        cell.reset()
+        if indexPath.section == 0 {
+            cell.configEmojiCell(emoji: emojies[indexPath.row])
+            
+            if indexPath == selectedEmojiIndexPath {
+                cell.selectEmoji()
+            } else {
+                cell.deselectEmoji()
+            }
+            
+        } else if indexPath.section == 1 {
+            cell.configColorCell(color: colors[indexPath.row])
+            if indexPath == selectedColorIndexPath {
+                let colorForBorder = colors[indexPath.row].withAlphaComponent(0.3)
+                cell.selectColor(color: colorForBorder)
+            } else {
+                cell.deselectColor()
+            }
+        }
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        var id: String
+        switch kind {
+        case UICollectionView.elementKindSectionHeader:
+            id = "header"
+        case UICollectionView.elementKindSectionFooter:
+            id = "footer"
+        default:
+            id = ""
+        }
+        
+        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? SupplementaryView else {
+            assertionFailure("Не удалось выполнить приведение к SupplementaryView")
+            return UICollectionReusableView()
+        }
+        if indexPath.section == 0 {
+            view.titleLabel.text = "Emoji"
+        } else {
+            view.titleLabel.text = "Цвет"
+        }
+        return view
+    }
+}
+
+//MARK: UICollectionViewDelegateFlowLayout
+extension HabitAndEventViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 52, height: 52)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        // Устанавливаем отступы от границ экрана до ячеек
+        return UIEdgeInsets(top: 24, left: 18, bottom: 24, right: 19)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        
+        let indexPath = IndexPath(row: 0, section: section)
+        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
+        
+        return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width,
+                                                         height: UIView.layoutFittingExpandedSize.height),
+                                                  withHorizontalFittingPriority: .required,
+                                                  verticalFittingPriority: .fittingSizeLevel)
+    }
+}
+
+extension HabitAndEventViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        if indexPath.section == 0 {
+            if let selectedEmojiIndexPath = selectedEmojiIndexPath, let previousCell = collectionView.cellForItem(at: selectedEmojiIndexPath) as? HabitAndEventCollectionViewCell {
+                previousCell.deselectEmoji()
+            }
+            selectedEmojiIndexPath = indexPath
+            emojiForTracker = emojies[indexPath.row]
+            if let cell = collectionView.cellForItem(at: indexPath) as? HabitAndEventCollectionViewCell {
+                cell.selectEmoji()
+            }
+        }
+        else if indexPath.section == 1 {
+            if let selectedColorIndexPath = selectedColorIndexPath, let previousCell = collectionView.cellForItem(at: selectedColorIndexPath) as? HabitAndEventCollectionViewCell {
+                previousCell.deselectColor()
+            }
+            selectedColorIndexPath = indexPath
+            colorForTracer = colors[indexPath.row]
+            if let cell = collectionView.cellForItem(at: indexPath) as? HabitAndEventCollectionViewCell {
+                let colorForBorder = colors[indexPath.row].withAlphaComponent(0.3)
+                cell.selectColor(color: colorForBorder)
+            }
+        }
+        updateCreateButtonState()
+    }
+}
+
+extension HabitAndEventViewController: CategoryViewModelDelegate {
+    func categoryIsPicked(category: String) {
         categoryForTracker = category
         trackerTableView.reloadData()
         updateCreateButtonState()

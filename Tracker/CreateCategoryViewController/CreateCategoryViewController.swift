@@ -8,13 +8,15 @@
 import UIKit
 
 protocol CreateCategoryViewControllerDelegate: AnyObject {
-    func createNewCategory(newCategory: String)
+    func getCategoryFromModel()
 }
 
 final class CreateCategoryViewController: UIViewController {
     
+    private let trackerCategoryStore = TrackerCategoryStore()
+    weak var categoryViewModel: CategoryViewModel!
     weak var delegate: CreateCategoryViewControllerDelegate?
-
+    
     private lazy var titleLable = UILabel()
     private lazy var categoryTextField = UITextField()
     private lazy var doneButton = UIButton()
@@ -24,6 +26,7 @@ final class CreateCategoryViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite
         configureSubviews()
+        setupToHideKeyboardOnTapOnView()
     }
     
     private func configureSubviews() {
@@ -44,6 +47,7 @@ final class CreateCategoryViewController: UIViewController {
         categoryTextField.leftViewMode = .always
         categoryTextField.clearButtonMode = .whileEditing
         categoryTextField.addTarget(self, action: #selector(textFieldEditingChanged), for: .editingChanged)
+        categoryTextField.delegate = self
         
         doneButton.setTitle("Готово", for: .normal)
         doneButton.backgroundColor = .ypGray
@@ -81,7 +85,8 @@ final class CreateCategoryViewController: UIViewController {
     }
     
     @objc private func doneButtonClicked() {
-        delegate?.createNewCategory(newCategory: textFromTextField!)
+        trackerCategoryStore.saveNewCategory(title: textFromTextField!)
+        delegate?.getCategoryFromModel()
         dismiss(animated: true)
     }
     
@@ -103,6 +108,11 @@ final class CreateCategoryViewController: UIViewController {
         doneButton.backgroundColor = .ypGray
         doneButton.isEnabled = false
     }
-    
-    
+}
+
+extension CreateCategoryViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
+    }
 }

@@ -9,12 +9,15 @@ import UIKit
 
 final class TrackerCollectionViewCell: UICollectionViewCell {
     
+    private let coreDataManager = CoreDataManager.shared
+    static let Identifier = "TrackerCollectionViewCell"
     
     private lazy var topView = UIView()
     private lazy var smileLabel = UILabel()
     private lazy var descriptionLAble = UILabel()
     private lazy var countDaysLable = UILabel()
     private lazy var plusButton = UIButton()
+    
     private var indexPath: IndexPath?
     private var trackerId: UUID? = nil
     private var isCompleted: Bool = false
@@ -22,7 +25,6 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         addSubviewsAndConstraints()
     }
     
@@ -107,7 +109,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         topView.backgroundColor = color
         plusButton.backgroundColor = color
         plusButton.alpha = isCompleted ? 0.3 : 1
-        if isCompleted{
+        if isCompleted {
             plusButton.setImage(UIImage(named: "done"), for: .normal)
         } else {
             plusButton.setImage(UIImage(systemName: "plus"), for: .normal)
