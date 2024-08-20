@@ -116,7 +116,10 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         }
         descriptionLAble.text = name
         smileLabel.text = emoji
-        countDaysLable.text = "\(completedDays.days())"
+        countDaysLable.text = String.localizedStringWithFormat(
+            NSLocalizedString("numberOfTasks", comment: "подбор формы записи дня"),
+            completedDays
+        )
         
         self.indexPath = indexPath
         self.isCompleted = isCompleted

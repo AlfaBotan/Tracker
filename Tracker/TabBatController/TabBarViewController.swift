@@ -8,14 +8,15 @@
 import UIKit
 
 final class TabBarViewController: UITabBarController {
-    
+    let nameForTrackers = NSLocalizedString("trackers", comment: "Название вкладки трекеров")
+    let nameForStatistics = NSLocalizedString("statistics", comment: "Название вкладки статистики")
     override func viewDidLoad() {
         super.viewDidLoad()
         let trackerViewController = TrackerViewController()
         let navigationController = UINavigationController(rootViewController: trackerViewController)
         let statisticViewController = StatisticViewController()
-        trackerViewController.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(named: "tabBarCircle"), selectedImage: nil)
-        statisticViewController.tabBarItem = UITabBarItem(title: "Статистика", image: UIImage(named: "tabBarRabbit"), selectedImage: nil)
+        trackerViewController.tabBarItem = UITabBarItem(title: nameForTrackers, image: UIImage(named: "tabBarCircle"), selectedImage: nil)
+        statisticViewController.tabBarItem = UITabBarItem(title: nameForStatistics, image: UIImage(named: "tabBarRabbit"), selectedImage: nil)
         self.viewControllers = [navigationController, statisticViewController]
         addSeparatorLine()
     }

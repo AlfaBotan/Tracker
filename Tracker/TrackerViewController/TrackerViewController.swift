@@ -58,13 +58,15 @@ final class TrackerViewController: UIViewController {
     private func addDatePicker() {
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .compact
+        datePicker.locale = .current
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
     }
     
     private func addTrackerLable() {
-        trackerLable.text = "Трекеры"
+        let text = NSLocalizedString("trackers", comment: "Текст для trackerLable")
+        trackerLable.text = text
         trackerLable.font = .systemFont(ofSize: 34, weight: .bold)
         trackerLable.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(trackerLable)
@@ -83,7 +85,8 @@ final class TrackerViewController: UIViewController {
         searchField.layer.cornerRadius = 15
         searchField.font = .systemFont(ofSize: 17, weight: .regular)
         searchField.textAlignment = .left
-        searchField.placeholder = "Поиск"
+        let textForPlaceholder = NSLocalizedString("search", comment: "Текст для UITextField")
+        searchField.placeholder = textForPlaceholder
         let searchIcon = UIImageView(image: UIImage(systemName: "magnifyingglass"))
         searchIcon.tintColor = .gray
         searchIcon.frame = CGRect(x: 8, y: 0, width: 16, height: 16)
@@ -122,7 +125,8 @@ final class TrackerViewController: UIViewController {
     }
     
     private func addPlaceholderLable() {
-        placeholderLable.text = "Что будем отслеживать?"
+        let textForLable = NSLocalizedString("emptyState.title", comment: "Текст для заглушки")
+        placeholderLable.text = textForLable
         placeholderLable.font = .systemFont(ofSize: 12, weight: .medium)
         placeholderLable.textAlignment = .center
         
@@ -281,10 +285,8 @@ extension TrackerViewController: TrackerCollectionViewCellDelegate {
         do {
             if isTrackerCompleted(tracker, for: selectedDate) {
                 trackerRecordStore.removeTrackerRecord(identifier: tracker.identifier, date: selectedDate)
-                print("Удаляем")
             } else {
                 try trackerRecordStore.addTrackerRecord(identifier: tracker.identifier, date: selectedDate)
-                print("добавляем")
             }
             collectionView.reloadItems(at: [indexPath])
         } catch {
