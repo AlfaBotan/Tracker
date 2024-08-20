@@ -29,7 +29,6 @@ final class CoreDataManager: NSObject {
             if let error = error as NSError? {
                 print(error.localizedDescription)
                 assertionFailure("Unresolved error \(error), \(error.userInfo)")
-                fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
         return container

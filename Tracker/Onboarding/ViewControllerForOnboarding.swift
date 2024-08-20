@@ -8,6 +8,8 @@
 import UIKit
 
 final class ViewControllerForOnboarding: UIViewController {
+    var onOnboardingFinished: (() -> Void)?
+    
     private lazy var button = UIButton()
     private lazy var lable = UILabel()
     private lazy var imageView = UIImageView()
@@ -57,18 +59,13 @@ final class ViewControllerForOnboarding: UIViewController {
     }
     
     @objc
-    func targetForButton() {
+    private func targetForButton() {
+        onOnboardingFinished?()
         UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
-        
-        if let window = UIApplication.shared.windows.first {
-            let newViewController = TabBarViewController()
-            window.rootViewController = newViewController
-            window.makeKeyAndVisible()
-        }
     }
     
-    func configLableAndImage(text: String, image: UIImage?) {
-        lable.text = text
-        imageView.image = image
+    func configLableAndImage(onboardingPage: OnboardingPage) {
+        lable.text = onboardingPage.text
+        imageView.image = onboardingPage.image
     }
 }

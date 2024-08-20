@@ -8,7 +8,7 @@
 import Foundation
 
 protocol CategoryViewModelDelegate: AnyObject {
-    func categoryIsPicket(category: String)
+    func categoryIsPicked(category: String)
 }
 
 final class CategoryViewModel {
@@ -37,7 +37,7 @@ final class CategoryViewModel {
     }
     
     func categoryIsPicked(category: String) {
-        delegate?.categoryIsPicket(category: category)
+        delegate?.categoryIsPicked(category: category)
     }
 }
 

@@ -10,22 +10,33 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
+    let flagsAndSettings = FlagsAndSettings()
     
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
-        
-        let hasSeenOnboarding = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
-        
-        if hasSeenOnboarding {
+                
+        if flagsAndSettings.hasSeenOnboarding {
             window.rootViewController = TabBarViewController()
         } else {
-            window.rootViewController = OnboardingViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
+            let onboardingVC = OnboardingViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
+            onboardingVC.showMainView = { [weak self] in
+                self?.showMainApp()
+            }
+            
+            window.rootViewController = onboardingVC
+            
         }
         window.makeKeyAndVisible()
         self.window = window
     }
+    
+    func showMainApp() {
+            let mainTabBarController = TabBarViewController()
+            window?.rootViewController = mainTabBarController
+            window?.makeKeyAndVisible()
+        }
     
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.

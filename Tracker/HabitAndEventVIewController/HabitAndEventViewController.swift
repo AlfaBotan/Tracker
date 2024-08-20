@@ -385,12 +385,11 @@ extension HabitAndEventViewController: UICollectionViewDelegate {
             }
         }
         updateCreateButtonState()
-        
     }
 }
 
 extension HabitAndEventViewController: CategoryViewModelDelegate {
-    func categoryIsPicket(category: String) {
+    func categoryIsPicked(category: String) {
         categoryForTracker = category
         trackerTableView.reloadData()
         updateCreateButtonState()

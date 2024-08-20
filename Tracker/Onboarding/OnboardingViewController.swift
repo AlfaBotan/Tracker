@@ -7,16 +7,20 @@
 
 import UIKit
 
-class OnboardingViewController: UIPageViewController {
-    private let textForLable = ["Отслеживайте только то, что хотите", "Даже если это не литры воды и йога"]
-    private let imageForControllers = [UIImage(named: "onboardingRed"), UIImage(named: "onboardingBlue")]
-    
+final class OnboardingViewController: UIPageViewController {
+    var showMainView: (() -> Void)?
     private lazy var controllersForPVC: [UIViewController] = {
-        let red = ViewControllerForOnboarding()
-        red.configLableAndImage(text: textForLable[0], image: imageForControllers[0])
-        let blue = ViewControllerForOnboarding()
-        blue.configLableAndImage(text: textForLable[1], image: imageForControllers[1])
-        return [red, blue]
+        let first = ViewControllerForOnboarding()
+        first.configLableAndImage(onboardingPage: .firstPage)
+        first.onOnboardingFinished = { [weak self] in
+            self?.showMain()
+        }
+        let second = ViewControllerForOnboarding()
+        second.configLableAndImage(onboardingPage: .secondPage)
+        second.onOnboardingFinished = { [weak self] in
+            self?.showMain()
+        }
+        return [first, second]
     }()
     
     private lazy var pageControl: UIPageControl = {
@@ -46,6 +50,10 @@ class OnboardingViewController: UIPageViewController {
             pageControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -134),
             pageControl.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
         ])
+    }
+    
+    private func showMain() {
+        showMainView?()
     }
 }
 
