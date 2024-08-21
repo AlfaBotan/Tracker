@@ -42,11 +42,9 @@ final class TrackerViewController: UIViewController {
     }
     
     private func addPlusButton() {
-        let image = UIImage(named: "plus1")
-        plusButton.setImage(image, for: .normal)
+        let plusButton = UIBarButtonItem(image: UIImage(named: "plus"), style: .plain, target: self, action: #selector(Self.plusButtonPress))
         plusButton.tintColor = .ypBlack
-        plusButton.addTarget(self, action: #selector(plusButtonPress), for: .touchUpInside)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: plusButton)
+        navigationItem.leftBarButtonItem = plusButton
     }
     
     @objc
@@ -59,6 +57,7 @@ final class TrackerViewController: UIViewController {
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .compact
         datePicker.locale = .current
+        datePicker.backgroundColor = .ypWhite
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
@@ -85,10 +84,16 @@ final class TrackerViewController: UIViewController {
         searchField.layer.cornerRadius = 15
         searchField.font = .systemFont(ofSize: 17, weight: .regular)
         searchField.textAlignment = .left
+        searchField.textColor = .ypColorForSearchField
+        searchField.tintColor = .ypColorForSearchField
         let textForPlaceholder = NSLocalizedString("search", comment: "Текст для UITextField")
-        searchField.placeholder = textForPlaceholder
+        let attributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor.ypColorForSearchField,
+            .font: UIFont.systemFont(ofSize: 17, weight: .regular)
+        ]
+        searchField.attributedPlaceholder = NSAttributedString(string: textForPlaceholder, attributes: attributes)
         let searchIcon = UIImageView(image: UIImage(systemName: "magnifyingglass"))
-        searchIcon.tintColor = .gray
+        searchIcon.tintColor = .ypColorForSearchField
         searchIcon.frame = CGRect(x: 8, y: 0, width: 16, height: 16)
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 30, height: 16))
         paddingView.addSubview(searchIcon)
@@ -146,6 +151,7 @@ final class TrackerViewController: UIViewController {
         
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.backgroundColor = .ypWhite
         collectionView.register(TrackerCollectionViewCell.self, forCellWithReuseIdentifier: TrackerCollectionViewCell.Identifier)
         collectionView.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         
@@ -162,6 +168,7 @@ final class TrackerViewController: UIViewController {
     }
     
     private func addAllSubView() {
+        view.backgroundColor = .ypWhite
         addPlusButton()
         addDatePicker()
         addTrackerLable()
@@ -217,7 +224,7 @@ extension TrackerViewController: UICollectionViewDataSource {
         let tracker = visibleTrackers[indexPath.section].trackers[indexPath.row]
         
         let completionCount2 = trackerRecordStore.getTrackerRecords(by: tracker.identifier).count
-        let isCompleteToday = isTrackerCompleted(tracker, for: selectedDate)        
+        let isCompleteToday = isTrackerCompleted(tracker, for: selectedDate)
         cell.configCell(id: tracker.identifier, name: tracker.name, color: tracker.color, emoji: tracker.emoji, completedDays: completionCount2, isEnabled: true, isCompleted: isCompleteToday, indexPath: indexPath)
         cell.delegate = self
         return cell
