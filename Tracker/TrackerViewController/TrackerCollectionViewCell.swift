@@ -6,11 +6,14 @@
 //
 
 import UIKit
+import YandexMobileMetrica
+
 
 final class TrackerCollectionViewCell: UICollectionViewCell {
     
     private let coreDataManager = CoreDataManager.shared
     static let Identifier = "TrackerCollectionViewCell"
+    private let analyticsService = AnalyticsService()
     
     private lazy var topView = UIView()
     private lazy var smileLabel = UILabel()
@@ -103,6 +106,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     @objc
     private func plusButtonPress() {
         delegate?.buttonTapped(in: self)
+        analyticsService.report(event: "click", params: ["screen": "Main", "item": "plus_on_trackerCard"])
     }
     
     func configCell(id: UUID, name: String, color: UIColor, emoji: String, completedDays: Int, isEnabled: Bool, isCompleted: Bool, indexPath: IndexPath){
