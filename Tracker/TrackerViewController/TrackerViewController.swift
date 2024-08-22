@@ -11,6 +11,8 @@ import YandexMobileMetrica
 
 protocol TrackerCollectionViewCellDelegate: AnyObject {
     func buttonTapped(in cell: TrackerCollectionViewCell)
+    func confirmingDeletionAlert(alert: UIAlertController)
+    func showEditorView(controller: UIViewController)
 }
 
 final class TrackerViewController: UIViewController {
@@ -261,10 +263,10 @@ extension TrackerViewController: UICollectionViewDataSource {
         }
         
         let tracker = filteredTrackers[indexPath.section].trackers[indexPath.row]
-        
+        let categoryName = filteredTrackers[indexPath.section].title
         let completionCount2 = trackerRecordStore.getTrackerRecords(by: tracker.identifier).count
         let isCompleteToday = isTrackerCompleted(tracker, for: selectedDate)
-        cell.configCell(id: tracker.identifier, name: tracker.name, color: tracker.color, emoji: tracker.emoji, completedDays: completionCount2, isEnabled: true, isCompleted: isCompleteToday, indexPath: indexPath)
+        cell.configCell(id: tracker.identifier, name: tracker.name, color: tracker.color, emoji: tracker.emoji, completedDays: completionCount2, isEnabled: true, isCompleted: isCompleteToday, indexPath: indexPath, categoryName: categoryName, weekDays: tracker.timetable)
         cell.delegate = self
         return cell
     }
@@ -315,45 +317,11 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension TrackerViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
-            guard indexPaths.count > 0 else {
-                return nil
-            }
-            
-            let indexPath = indexPaths[0]
-            let deleteCellString = NSLocalizedString("delete", comment: "text for contextMenu")
-            return UIContextMenuConfiguration(actionProvider: { actions in
-                return UIMenu(children: [
-
-                    UIAction(title: deleteCellString) { [weak self] _ in
-                        self?.confirmingDeletionAlert(indexForDelete: indexPath)
-                    }
-                ])
-            })
-        }
-    
-    private func deleteCell(indexPath: IndexPath) {
-//            let cell = collectionView.cellForItem(at: indexPath) as? TrackerCollectionViewCell
-        
-        }
-    
-    private func confirmingDeletionAlert(indexForDelete: IndexPath) {
-        let deleteCellString = NSLocalizedString("delete", comment: "text for delete button")
-        let abortString = NSLocalizedString("cancel", comment: "text for cancel button")
-        let titleForAlert = NSLocalizedString("delete.confirmation", comment: "Title for alert")
-        let alert = UIAlertController(title: titleForAlert, message: nil, preferredStyle: .actionSheet)
-        let deleteAction = UIAlertAction(title: deleteCellString, style: .destructive) { [weak self] _ in
-            self?.deleteCell(indexPath: indexForDelete)
-        }
-        let cancelAction = UIAlertAction(title: abortString, style: .cancel, handler: nil)
-        alert.addAction(deleteAction)
-        alert.addAction(cancelAction)
-        present(alert, animated: true)
-    }
-}
-
 extension TrackerViewController: TrackerCollectionViewCellDelegate {
+    func showEditorView(controller: UIViewController) {
+        present(controller, animated: true)
+    }
+    
     func buttonTapped(in cell: TrackerCollectionViewCell) {
         
         if !Calendar.current.isDate(selectedDate, inSameDayAs: currentDate) {
@@ -377,6 +345,10 @@ extension TrackerViewController: TrackerCollectionViewCellDelegate {
             print("Ошибка при обновлении состояния трекера: \(error)")
         }
     }
+    
+     func confirmingDeletionAlert(alert: UIAlertController) {
+            present(alert, animated: true)
+        }
 }
 
 extension TrackerViewController: CoreDataManagerDelegate {

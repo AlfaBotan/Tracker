@@ -40,7 +40,6 @@ final class CoreDataManager: NSObject {
         let fetchRequest = NSFetchRequest<TrackerCD>(entityName: "TrackerCD")
         fetchRequest.predicate = NSPredicate(format: "timetable CONTAINS %@", weekday)
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "category.title", ascending: true)]
-        // Если FRC ещё не был инициализирован, создаем его
         if fetchedResultsController == nil {
             print("FRC nil")
             fetchedResultsController = NSFetchedResultsController(
@@ -60,7 +59,7 @@ final class CoreDataManager: NSObject {
             print("Грузим Трекеры")
             if let fetchedObjects = fetchedResultsController.fetchedObjects {
                 let trackerCategories = convertToTrackerCategories(fetchedObjects)
-                delegate?.didChangeData(trackerCategories)
+                pinCategory(array: trackerCategories)
             }
         } catch {
             print("Ошибка выполнения запроса: \(error)")
@@ -102,24 +101,28 @@ final class CoreDataManager: NSObject {
         }
         return trackerCategories
     }
+    
+    func pinCategory(array: [TrackerCategory]) {
+        if let pinnedIndex = array.firstIndex(where: { $0.title == "Закрепленные" }) {
+            var updatedCategories = array
+            let pinnedCategory = updatedCategories.remove(at: pinnedIndex)
+            updatedCategories.insert(pinnedCategory, at: 0)
+            delegate?.didChangeData(updatedCategories)
+        } else {
+            delegate?.didChangeData(array)
+        }
+    }
 }
+    
+
 
 extension CoreDataManager: NSFetchedResultsControllerDelegate {
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
-        print("Will change content")
-    }
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
-        print("Вызвался DidChangeContent")
-        
         if let fetchedObjects = fetchedResultsController.fetchedObjects {
             let trackerCategories = convertToTrackerCategories(fetchedObjects)
-            delegate?.didChangeData(trackerCategories)
+            pinCategory(array: trackerCategories)
         } else {
             print("Не удалось получить запрашиваемые объекты")
         }
-    }
-
-    internal func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        print("Did change object")
     }
 }

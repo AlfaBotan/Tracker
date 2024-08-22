@@ -43,6 +43,7 @@
 		1C9DF7A82C6CE49B007DC4A4 /* ExtensionForVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9DF7A72C6CE49B007DC4A4 /* ExtensionForVC.swift */; };
 		1C9DF7CE2C6E922D007DC4A4 /* CategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9DF7CD2C6E922D007DC4A4 /* CategoryViewModel.swift */; };
 		1CA6D3552C7679DC001A576E /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA6D3542C7679DC001A576E /* AnalyticsService.swift */; };
+		1CA6D37A2C76CA4F001A576E /* EditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA6D3792C76CA4F001A576E /* EditorViewController.swift */; };
 		1CB36D112C4455E400F2BCF0 /* TrackerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB36D102C4455E400F2BCF0 /* TrackerCollectionViewCell.swift */; };
 		1CCCF3AB2C459D9B00F38C8B /* SupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCCF3AA2C459D9B00F38C8B /* SupplementaryView.swift */; };
 		1CCCF3AD2C45AF3B00F38C8B /* Weekdays.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCCF3AC2C45AF3B00F38C8B /* Weekdays.swift */; };
@@ -106,6 +107,7 @@
 		1C9DF7A72C6CE49B007DC4A4 /* ExtensionForVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionForVC.swift; sourceTree = "<group>"; };
 		1C9DF7CD2C6E922D007DC4A4 /* CategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewModel.swift; sourceTree = "<group>"; };
 		1CA6D3542C7679DC001A576E /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
+		1CA6D3792C76CA4F001A576E /* EditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorViewController.swift; sourceTree = "<group>"; };
 		1CB36D102C4455E400F2BCF0 /* TrackerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCollectionViewCell.swift; sourceTree = "<group>"; };
 		1CCCF3AA2C459D9B00F38C8B /* SupplementaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementaryView.swift; sourceTree = "<group>"; };
 		1CCCF3AC2C45AF3B00F38C8B /* Weekdays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weekdays.swift; sourceTree = "<group>"; };
@@ -253,6 +255,7 @@
 		1C5B65D12C347CC5002B4541 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				1CA6D3782C76CA37001A576E /* EditorViewController */,
 				1C4D46B82C7531B600905C81 /* Resources */,
 				1C01622E2C5B04EE00327ABB /* Helpers */,
 				1C0FFFC42C57BD4C00D62ACE /* CoreData */,
@@ -325,6 +328,14 @@
 				1C9DF7CD2C6E922D007DC4A4 /* CategoryViewModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		1CA6D3782C76CA37001A576E /* EditorViewController */ = {
+			isa = PBXGroup;
+			children = (
+				1CA6D3792C76CA4F001A576E /* EditorViewController.swift */,
+			);
+			path = EditorViewController;
 			sourceTree = "<group>";
 		};
 		1CB36D0F2C44559E00F2BCF0 /* Models */ = {
@@ -551,6 +562,7 @@
 				1C1C58F52C516E7100C4321F /* HabitAndEventViewController.swift in Sources */,
 				1C5B65D32C347CC5002B4541 /* AppDelegate.swift in Sources */,
 				1C540DD62C527CBF005B3A83 /* HabitAndEventCollectionViewCell.swift in Sources */,
+				1CA6D37A2C76CA4F001A576E /* EditorViewController.swift in Sources */,
 				1C5592AB2C4DA4F600B1C035 /* CreateCategoryViewController.swift in Sources */,
 				1C5592B72C4EE76000B1C035 /* HabitAndEventTableViewСеll.swift in Sources */,
 				1C5B65E92C35AF7F002B4541 /* StatisticViewController.swift in Sources */,
