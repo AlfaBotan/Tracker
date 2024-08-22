@@ -16,9 +16,9 @@ final class TabBarViewController: UITabBarController {
         tabBar.backgroundColor = .ypWhite
         let trackerViewController = TrackerViewController()
         let navigationController = UINavigationController(rootViewController: trackerViewController)
-        
         let statisticViewController = StatisticViewController()
         trackerViewController.tabBarItem = UITabBarItem(title: nameForTrackers, image: UIImage(named: "tabBarCircle"), selectedImage: nil)
+        trackerViewController.delegate = statisticViewController
         statisticViewController.tabBarItem = UITabBarItem(title: nameForStatistics, image: UIImage(named: "tabBarRabbit"), selectedImage: nil)
         self.viewControllers = [navigationController, statisticViewController]
         addSeparatorLine()

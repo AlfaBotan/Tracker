@@ -8,7 +8,6 @@
 import UIKit
 import YandexMobileMetrica
 
-
 final class TrackerCollectionViewCell: UICollectionViewCell {
     
     private let coreDataManager = CoreDataManager.shared
@@ -30,6 +29,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     private var weekDays: [Weekdays] = []
     private var color: UIColor? = nil
     weak var delegate: TrackerCollectionViewCellDelegate?
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)

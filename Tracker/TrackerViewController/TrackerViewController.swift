@@ -8,6 +8,9 @@
 import UIKit
 import YandexMobileMetrica
 
+protocol TrackerViewControllerDelegateForStatistic: AnyObject {
+    func whatsShow(days: Int)
+}
 
 protocol TrackerCollectionViewCellDelegate: AnyObject {
     func buttonTapped(in cell: TrackerCollectionViewCell)
@@ -16,7 +19,7 @@ protocol TrackerCollectionViewCellDelegate: AnyObject {
 }
 
 final class TrackerViewController: UIViewController {
-    
+    var delegate: TrackerViewControllerDelegateForStatistic?
     private let coreDataManager = CoreDataManager.shared
     private let trackerStore = TrackerStore()
     private let trackerCategoryStore = TrackerCategoryStore()
@@ -35,7 +38,6 @@ final class TrackerViewController: UIViewController {
     private var completedTrackers: [TrackerRecord] = []
     private var visibleTrackers: [TrackerCategory] = []
     private var filteredTrackers: [TrackerCategory] = []
-//    private var pickedFilter: FiltersCases?
     private var selectedDate: Date = Date()
     private let currentDate: Date = Date()
     
@@ -284,7 +286,7 @@ final class TrackerViewController: UIViewController {
             collectionView.isHidden = true
             var isFilterPicked: Bool = false
             if let savedFilterRawValue = UserDefaults.standard.string(forKey: "pickedFilter"),
-                   let savedFilter = FiltersCases(rawValue: savedFilterRawValue) {
+                   let _ = FiltersCases(rawValue: savedFilterRawValue) {
                 isFilterPicked = true
                 }
             let isSearchTextEmpty = !(searchField.text?.isEmpty ?? true)
@@ -424,7 +426,7 @@ extension TrackerViewController: TrackerCollectionViewCellDelegate {
         } catch {
             print("Ошибка при обновлении состояния трекера: \(error)")
         }
-        
+        delegate?.whatsShow(days: trackerRecordStore.getAllTrackerRecords().count)
         if let savedFilterRawValue = UserDefaults.standard.string(forKey: "pickedFilter"),
                let savedFilter = FiltersCases(rawValue: savedFilterRawValue) {
                 filterTrackers(whith: savedFilter)

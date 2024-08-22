@@ -112,6 +112,7 @@ final class TrackerRecordStore {
                     trackerRecords.append(TrackerRecord(Identifier: recordID, date: recordDate))
                 }
             }
+            print(trackerRecords.count)
             return trackerRecords
         } catch {
             print("Не удалось получить записи TrackerRecordCD: \(error)")
