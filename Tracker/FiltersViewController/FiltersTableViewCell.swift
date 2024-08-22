@@ -1,15 +1,15 @@
 //
-//  CategoryTableViewCell.swift
+//  FiltersTableViewCell.swift
 //  Tracker
 //
-//  Created by Илья Волощик on 21.07.24.
+//  Created by Илья Волощик on 22.08.24.
 //
 
 import UIKit
 
-final class CategoryTableViewСеll: UITableViewCell {
+final class FiltersTableViewCell: UITableViewCell {
     
-    static let identifer = "CategoryTableViewСеll"
+    static let identifer = "FiltersTableViewCell"
     
     private lazy var doneImg: UIImageView = {
         return UIImageView(image: UIImage(named: "doneBlue"))
@@ -63,7 +63,6 @@ final class CategoryTableViewСеll: UITableViewCell {
     func configureCell(textLable: String) {
         prepareForReuse()
         categoryLable.text = textLable
-        
     }
     
     func showOrHideDoneImg() {
@@ -73,7 +72,6 @@ final class CategoryTableViewСеll: UITableViewCell {
             doneImg.isHidden = true
         }
     }
-    
     
     func getChoiсe() -> String {
         guard let text = categoryLable.text else {return "Без категории"}

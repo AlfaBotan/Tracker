@@ -173,10 +173,6 @@ extension TrackerCollectionViewCell: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         
         let deleteCellString = NSLocalizedString("delete", comment: "text for contextMenu")
-        let deleteCellAttributedString = NSAttributedString(
-               string: deleteCellString,
-               attributes: [.foregroundColor: UIColor.red]
-           )
         
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions in
             return UIMenu(children: [

@@ -64,7 +64,44 @@ final class CoreDataManager: NSObject {
         } catch {
             print("Ошибка выполнения запроса: \(error)")
         }
+    }
+    
+    func configureFetchedResultsController(for identifiers: [UUID]) {
+        let fetchRequest = NSFetchRequest<TrackerCD>(entityName: "TrackerCD")
         
+        // Создаем NSPredicate для фильтрации по массиву идентификаторов
+        fetchRequest.predicate = NSPredicate(format: "identifier IN %@", identifiers)
+        
+        // Задаем сортировку (если нужно, можно изменить ключ сортировки)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "category.title", ascending: true)]
+        
+        // Настраиваем или обновляем fetchedResultsController
+        if fetchedResultsController == nil {
+            print("FRC nil")
+            fetchedResultsController = NSFetchedResultsController(
+                fetchRequest: fetchRequest,
+                managedObjectContext: context,
+                sectionNameKeyPath: "category.title",
+                cacheName: nil
+            )
+            fetchedResultsController.delegate = self
+        } else {
+            print("FRC not nil")
+            fetchedResultsController.fetchRequest.predicate = fetchRequest.predicate
+        }
+        
+        // Выполняем запрос
+        do {
+            try fetchedResultsController.performFetch()
+            print("Грузим Трекеры")
+            
+            if let fetchedObjects = fetchedResultsController.fetchedObjects {
+                let trackerCategories = convertToTrackerCategories(fetchedObjects)
+                pinCategory(array: trackerCategories)
+            }
+        } catch {
+            print("Ошибка выполнения запроса: \(error)")
+        }
     }
     
     private func createTracker(from trackerCD: TrackerCD) -> Tracker? {
