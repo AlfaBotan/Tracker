@@ -406,8 +406,8 @@ extension TrackerViewController: TrackerCollectionViewCellDelegate {
     
     func buttonTapped(in cell: TrackerCollectionViewCell) {
         
-        if !Calendar.current.isDate(selectedDate, inSameDayAs: currentDate) {
-            let alert = UIAlertController(title: "Ошибка", message: "Можно отмечать только текущий день", preferredStyle: .alert)
+        if Calendar.current.isDate(selectedDate, inSameDayAs: currentDate) == false && selectedDate > currentDate {
+            let alert = UIAlertController(title: "Ошибка", message: "Можно отмечать только текущий и прошедшие дни", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             present(alert, animated: true, completion: nil)
             return
