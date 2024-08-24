@@ -35,9 +35,6 @@ final class EditorViewController: UIViewController {
     }
     private let emojies = [ "🍇", "🍈", "🍉", "🍊", "🍋", "🍌", "🍍", "🥭", "🍎", "🍏", "🍐", "🍒", "🍓", "🫐", "🥝", "🍅", "🫒", "🥥", "🥑", "🍆", "🥔", "🥕", "🌽", "🌶️", "🫑", "🥒", "🥦", "🧄", "🧅", "🍄"]
     private let colors: [UIColor] = [UIColor(resource: .ypColor1), UIColor(resource: .ypColor2), UIColor(resource: .ypColor3), UIColor(resource: .ypColor4), UIColor(resource: .ypColor5), UIColor(resource: .ypColor6), UIColor(resource: .ypColor7), UIColor(resource: .ypColor8), UIColor(resource: .ypColor9), UIColor(resource: .ypColor10), UIColor(resource: .ypColor11), UIColor(resource: .ypColor12), UIColor(resource: .ypColor13), UIColor(resource: .ypColor14), UIColor(resource: .ypColor15), UIColor(resource: .ypColor16), UIColor(resource: .ypColor17), UIColor(resource: .ypColor18)]
-//    private let colors1: [UIColor] = [.ypColor1, .ypColor2, .ypColor3, .ypColor4, .ypColor5, .ypColor6, .ypColor7, .ypColor8, .ypColor9, .ypColor10, .ypColor11, .ypColor12, .ypColor13, .ypColor14, .ypColor15, .ypColor16, .ypColor17, .ypColor18]
-    
-    
     
     private lazy var scrollView = UIScrollView()
     private lazy var contentView = UIView()

@@ -161,13 +161,13 @@ final class HabitAndEventViewController: UIViewController {
             cancelButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             cancelButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor),
             cancelButton.heightAnchor.constraint(equalToConstant: 60),
-            cancelButton.widthAnchor.constraint(equalToConstant: 160),
+            cancelButton.trailingAnchor.constraint(equalTo: createButton.leadingAnchor, constant: -8),
             cancelButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
             createButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             createButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor),
             createButton.heightAnchor.constraint(equalToConstant: 60),
-            createButton.widthAnchor.constraint(equalToConstant: 160),
+            createButton.widthAnchor.constraint(equalToConstant: 165),
             createButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
     }
@@ -360,6 +360,8 @@ extension HabitAndEventViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
+//MARK: UICollectionViewDelegate
+
 extension HabitAndEventViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
@@ -388,6 +390,8 @@ extension HabitAndEventViewController: UICollectionViewDelegate {
     }
 }
 
+//MARK: CategoryViewModelDelegate
+
 extension HabitAndEventViewController: CategoryViewModelDelegate {
     func categoryIsPicked(category: String) {
         categoryForTracker = category
@@ -395,6 +399,8 @@ extension HabitAndEventViewController: CategoryViewModelDelegate {
         updateCreateButtonState()
     }
 }
+
+//MARK: WeekdaysViewControllerDelegate
 
 extension HabitAndEventViewController: WeekdaysViewControllerDelegate {
     func weekdaysIsPicket(weekDaysArray: [Weekdays]) {

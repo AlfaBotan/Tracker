@@ -86,7 +86,6 @@ final class CategoryViewController: UIViewController {
         view.addSubview(categoryTableView)
         view.addSubview(addCategoryButton)
         
-        
         NSLayoutConstraint.activate([
             titleLable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             titleLable.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),

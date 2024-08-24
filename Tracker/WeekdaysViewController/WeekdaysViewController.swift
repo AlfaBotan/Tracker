@@ -21,14 +21,12 @@ final class WeekdaysViewController: UIViewController {
     var weekDaysArrayFromVC: [Weekdays] = []
     weak var delegate: WeekdaysViewControllerDelegate?
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite
         weekdaysTableView.dataSource = self
         weekdaysTableView.delegate = self
         configureSubviews()
-        
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -113,8 +111,6 @@ extension WeekdaysViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
-    
-    
 }
 
 extension WeekdaysViewController: UITableViewDataSource {

@@ -17,8 +17,6 @@ final class HabitAndEventTableViewСеll: UITableViewCell {
     private lazy var nameLable = UILabel()
     private lazy var descriptionLable = UILabel()
     
-    
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         configureSubviews()

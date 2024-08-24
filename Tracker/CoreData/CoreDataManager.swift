@@ -33,6 +33,7 @@ final class CoreDataManager: NSObject {
         })
         return container
     }()
+    
     private var context: NSManagedObjectContext { persistentContainer.viewContext }
     private var fetchedResultsController: NSFetchedResultsController<TrackerCD>!
     
@@ -69,13 +70,10 @@ final class CoreDataManager: NSObject {
     func configureFetchedResultsController(for identifiers: [UUID]) {
         let fetchRequest = NSFetchRequest<TrackerCD>(entityName: "TrackerCD")
         
-        // Создаем NSPredicate для фильтрации по массиву идентификаторов
         fetchRequest.predicate = NSPredicate(format: "identifier IN %@", identifiers)
         
-        // Задаем сортировку (если нужно, можно изменить ключ сортировки)
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "category.title", ascending: true)]
         
-        // Настраиваем или обновляем fetchedResultsController
         if fetchedResultsController == nil {
             print("FRC nil")
             fetchedResultsController = NSFetchedResultsController(
@@ -90,7 +88,6 @@ final class CoreDataManager: NSObject {
             fetchedResultsController.fetchRequest.predicate = fetchRequest.predicate
         }
         
-        // Выполняем запрос
         do {
             try fetchedResultsController.performFetch()
             print("Грузим Трекеры")
@@ -151,8 +148,6 @@ final class CoreDataManager: NSObject {
     }
 }
     
-
-
 extension CoreDataManager: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
         if let fetchedObjects = fetchedResultsController.fetchedObjects {

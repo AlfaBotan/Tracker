@@ -33,7 +33,6 @@ final class StatisticViewController: UIViewController, TrackerViewControllerDele
     }
     
     private func applyGradientBorder() {
-        // Удаляем предыдущий градиентный слой, если он уже добавлен
         if let sublayers = holderForStatistic.layer.sublayers, sublayers.count > 0 {
             for layer in sublayers where layer is CAGradientLayer {
                 layer.removeFromSuperlayer()
@@ -127,6 +126,7 @@ final class StatisticViewController: UIViewController, TrackerViewControllerDele
     func whatsShow(days: Int) {
         countDays = days
         countLable.text = "\(countDays)"
+        
         if countDays == 0 {
             holderForStatistic.isHidden = true
             placeholder.isHidden = false

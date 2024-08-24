@@ -17,7 +17,6 @@ final class FiltersTableViewCell: UITableViewCell {
     
     private lazy var categoryLable = UILabel()
     
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         configureSubviews()
@@ -33,13 +32,12 @@ final class FiltersTableViewCell: UITableViewCell {
         layer.masksToBounds = false
     }
     
-    func configureSubviews() {
+    private func configureSubviews() {
         
         doneImg.isHidden = true
         
         categoryLable.translatesAutoresizingMaskIntoConstraints = false
         doneImg.translatesAutoresizingMaskIntoConstraints = false
-        
         
         contentView.addSubview(doneImg)
         contentView.addSubview(categoryLable)
@@ -66,11 +64,7 @@ final class FiltersTableViewCell: UITableViewCell {
     }
     
     func showOrHideDoneImg() {
-        if doneImg.isHidden {
-            doneImg.isHidden = false
-        } else {
-            doneImg.isHidden = true
-        }
+        doneImg.isHidden = !doneImg.isHidden
     }
     
     func getChoiсe() -> String {

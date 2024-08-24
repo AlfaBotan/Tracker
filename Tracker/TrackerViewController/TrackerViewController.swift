@@ -46,11 +46,10 @@ final class TrackerViewController: UIViewController {
         view.backgroundColor = .ypWhite
         coreDataManager.delegate = self
         coreDataManager.configureFetchedResultsController(for: Weekdays.fromDate(selectedDate))
-        showOrHideCollection()
+        showOrHideViews()
         filteredTrackers = visibleTrackers
         addAllSubView()
         setupToHideKeyboardOnTapOnView()
-        trackerRecordStore.removeAllTrackerRecords()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -156,7 +155,7 @@ final class TrackerViewController: UIViewController {
             filteredTrackers = visibleTrackers
         }
         collectionView.reloadData()
-        showOrHideCollection()
+        showOrHideViews()
     }
     
     private func addPlaceholder() {
@@ -265,8 +264,6 @@ final class TrackerViewController: UIViewController {
                let savedFilter = FiltersCases(rawValue: savedFilterRawValue) {
                 filterTrackers(whith: savedFilter)
             }
-        
-        
     }
     
     func getDayOfWeek(from date: Date) -> Weekdays? {
@@ -281,15 +278,19 @@ final class TrackerViewController: UIViewController {
         return trackerRecordStore.isTrackerCompleted(identifier: tracker.identifier, date: date)
     }
     
-    private func showOrHideCollection() {
+    private func showOrHideViews() {
+        var isFilterPicked: Bool = false
         if filteredTrackers.isEmpty {
             collectionView.isHidden = true
-            var isFilterPicked: Bool = false
-            if let savedFilterRawValue = UserDefaults.standard.string(forKey: "pickedFilter"),
-                   let _ = FiltersCases(rawValue: savedFilterRawValue) {
-                isFilterPicked = true
-                }
+            filtersButton.isHidden = true
+            
             let isSearchTextEmpty = !(searchField.text?.isEmpty ?? true)
+            
+            if let savedFilterRawValue = UserDefaults.standard.string(forKey: "pickedFilter"), let _ = FiltersCases(rawValue: savedFilterRawValue) {
+                isFilterPicked = true
+            } else {
+                isFilterPicked = false
+            }
 
             if isFilterPicked || isSearchTextEmpty {
                 placeholderLable.text = "Ничего не найдено"
@@ -299,13 +300,12 @@ final class TrackerViewController: UIViewController {
                 placeholderLable.text = textForLable
                 placeholder.image = UIImage(named: "placeholder")
             }
-            if isFilterPicked {
-                filtersButton.isHidden = true
-            } else {
-                filtersButton.isHidden = false
-            }
         } else {
             collectionView.isHidden = false
+            filtersButton.isHidden = false
+        }
+        if isFilterPicked {
+            filtersButton.isHidden = false
         }
     }
     
@@ -443,7 +443,7 @@ extension TrackerViewController: CoreDataManagerDelegate {
         visibleTrackers = data
         filteredTrackers = data
         textDidChange()
-        showOrHideCollection()
+        showOrHideViews()
         collectionView.reloadData()
     }
 }

@@ -30,7 +30,6 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     private var color: UIColor? = nil
     weak var delegate: TrackerCollectionViewCellDelegate?
     
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubviewsAndConstraints()
@@ -48,7 +47,6 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     
     private func addSubviewsAndConstraints() {
         
-        
         topView.layer.masksToBounds = true
         topView.layer.cornerRadius = 16
         
@@ -64,12 +62,10 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         countDaysLable.font = .systemFont(ofSize: 12, weight: .medium)
         countDaysLable.textColor = .ypBlack
         
-        
         plusButton.layer.cornerRadius = 17
         plusButton.layer.masksToBounds = true
         plusButton.tintColor = .ypWhite
         plusButton.addTarget(self, action: #selector(plusButtonPress), for: .touchUpInside)
-        
         
         descriptionLAble.translatesAutoresizingMaskIntoConstraints = false
         smileLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -82,7 +78,6 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         topView.addSubview(descriptionLAble)
         contentView.addSubview(countDaysLable)
         contentView.addSubview(plusButton)
-        
         
         NSLayoutConstraint.activate([
             topView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor),

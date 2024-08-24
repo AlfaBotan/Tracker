@@ -25,7 +25,6 @@ final class TrackerCategoryStore {
         return NSFetchRequest<TrackerCategoryCD>(entityName: "TrackerCategoryCD")
     }
     
-    
     func removeAllTrackerCategory() {
         let request = fetchRequest()
         var trackerCategoryFromDB: [TrackerCategoryCD] = []

@@ -6,9 +6,11 @@
 //
 
 import UIKit
+
 protocol FilterViewControllerProtocol: AnyObject {
     func saveChoise(filter: FiltersCases)
 }
+
 final class FiltersViewController: UIViewController {
     weak var delegate: FilterViewControllerProtocol?
 
@@ -55,7 +57,6 @@ final class FiltersViewController: UIViewController {
         view.addSubview(titleLable)
         view.addSubview(categoryTableView)
         
-        
         NSLayoutConstraint.activate([
             titleLable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             titleLable.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
@@ -77,6 +78,7 @@ extension FiltersViewController: UITableViewDelegate {
             assertionFailure("Не удалось выполнить приведение к CategoryTableViewСеll")
             return
         }
+        
         cell.showOrHideDoneImg()
         let pick = rowsForTableView[indexPath.row]
         pickedCase = pick
