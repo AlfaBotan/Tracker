@@ -262,6 +262,11 @@ final class TrackerViewController: UIViewController {
         coreDataManager.configureFetchedResultsController(for: Weekdays.fromDate(selectedDate))
         if let savedFilterRawValue = UserDefaults.standard.string(forKey: "pickedFilter"),
                let savedFilter = FiltersCases(rawValue: savedFilterRawValue) {
+                if savedFilter.self == .trackersOnToday {
+                    UserDefaults.standard.set(FiltersCases.allTrackers.rawValue, forKey: "pickedFilter")
+                    filterTrackers(whith: .allTrackers)
+                    return
+                }
                 filterTrackers(whith: savedFilter)
             }
     }

@@ -151,6 +151,7 @@ extension CategoryViewController: UITableViewDataSource {
         let category = categoryViewModel.categories[indexPath.row]
         cell.configureCell(textLable: category)
         cell.backgroundColor = .ypBackground
+        cell.selectionStyle = .none
         return cell
     }
     

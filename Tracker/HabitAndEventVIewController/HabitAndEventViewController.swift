@@ -260,6 +260,7 @@ extension HabitAndEventViewController: UITableViewDataSource {
             }
         }
         cell.backgroundColor = .ypBackground
+        cell.selectionStyle = .none
         return cell
     }
 }

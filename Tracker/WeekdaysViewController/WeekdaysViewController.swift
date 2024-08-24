@@ -134,6 +134,7 @@ extension WeekdaysViewController: UITableViewDataSource {
         }
         cell.backgroundColor = .ypBackground
         cell.delegate = self
+        cell.selectionStyle = .none
         updatedoneButtonnState()
         return cell
     }
