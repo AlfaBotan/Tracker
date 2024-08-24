@@ -224,6 +224,7 @@ extension HabitAndEventViewController: UITableViewDelegate {
         if indexPath.row == 0 {
             let viewModel = CategoryViewModel()
             viewModel.delegate = self
+            viewModel.pickCategory = categoryForTracker
             let viewController = CategoryViewController(categoryViewModel: viewModel)
             present(viewController, animated: true)
         } else if trackerType == .habit && indexPath.row == 1 {
@@ -248,14 +249,17 @@ extension HabitAndEventViewController: UITableViewDataSource {
             assertionFailure("Не удалось выполнить приведение к EventAndHabitTableViewСеll")
             return UITableViewCell()
         }
+        
         let text = rowsForTableView[indexPath.row]
         cell.configureNameLable(textNameLable: text)
         if indexPath.row == 0 {
+            cell.descriptionLableIsEmpty = categoryForTracker.isEmpty
             cell.configureDescriptionLable(textDescriptionLable: categoryForTracker)
         } else if trackerType == .habit && indexPath.row == 1 {
             if weekDaysArrayForTracker.count == 7 {
                 cell.configureDescriptionLable(textDescriptionLable: "Каждый день")
             } else {
+                cell.descriptionLableIsEmpty = weekdaysForTracker.isEmpty
                 cell.configureDescriptionLable(textDescriptionLable: weekdaysForTracker)
             }
         }
@@ -345,7 +349,6 @@ extension HabitAndEventViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        // Устанавливаем отступы от границ экрана до ячеек
         return UIEdgeInsets(top: 24, left: 18, bottom: 24, right: 19)
     }
     

@@ -32,12 +32,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
-            // Очистка состояния фильтра из UserDefaults
             UserDefaults.standard.removeObject(forKey: "pickedFilter")
         }
     
     func applicationDidEnterBackground(_ application: UIApplication) {
-            // Очистка состояния фильтра из UserDefaults
             UserDefaults.standard.removeObject(forKey: "pickedFilter")
         }
 }
