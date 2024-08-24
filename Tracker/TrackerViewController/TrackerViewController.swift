@@ -428,7 +428,6 @@ extension TrackerViewController: TrackerCollectionViewCellDelegate {
             } else {
                 try trackerRecordStore.addTrackerRecord(identifier: tracker.identifier, date: selectedDate)
             }
-            collectionView.reloadItems(at: [indexPath])
         } catch {
             print("Ошибка при обновлении состояния трекера: \(error)")
         }
