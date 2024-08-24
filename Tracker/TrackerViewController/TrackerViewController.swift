@@ -214,7 +214,8 @@ final class TrackerViewController: UIViewController {
     
     private func addFiltersButton() {
         filtersButton.backgroundColor = .ypBlue
-        filtersButton.setTitle("Фильтры", for: .normal)
+        let textForButton = NSLocalizedString("filters", comment: "Текст для кнопки Фильтры")
+        filtersButton.setTitle(textForButton, for: .normal)
         filtersButton.setTitleColor(.white, for: .normal)
         filtersButton.layer.masksToBounds = true
         filtersButton.layer.cornerRadius = 16
