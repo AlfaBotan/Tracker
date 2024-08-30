@@ -86,7 +86,6 @@ final class CategoryViewController: UIViewController {
         view.addSubview(categoryTableView)
         view.addSubview(addCategoryButton)
         
-        
         NSLayoutConstraint.activate([
             titleLable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             titleLable.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
@@ -149,9 +148,14 @@ extension CategoryViewController: UITableViewDataSource {
             assertionFailure("Не удалось выполнить приведение к CategoryTableViewСеll")
             return UITableViewCell()
         }
+        
         let category = categoryViewModel.categories[indexPath.row]
+        if categoryViewModel.pickCategory == category {
+            cell.showOrHideDoneImg()
+        }
         cell.configureCell(textLable: category)
         cell.backgroundColor = .ypBackground
+        cell.selectionStyle = .none
         return cell
     }
     

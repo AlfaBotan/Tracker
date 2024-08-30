@@ -161,13 +161,13 @@ final class HabitAndEventViewController: UIViewController {
             cancelButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             cancelButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor),
             cancelButton.heightAnchor.constraint(equalToConstant: 60),
-            cancelButton.widthAnchor.constraint(equalToConstant: 160),
+            cancelButton.trailingAnchor.constraint(equalTo: createButton.leadingAnchor, constant: -8),
             cancelButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
             createButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             createButton.topAnchor.constraint(equalTo: collectionView.bottomAnchor),
             createButton.heightAnchor.constraint(equalToConstant: 60),
-            createButton.widthAnchor.constraint(equalToConstant: 160),
+            createButton.widthAnchor.constraint(equalToConstant: 165),
             createButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
     }
@@ -224,6 +224,7 @@ extension HabitAndEventViewController: UITableViewDelegate {
         if indexPath.row == 0 {
             let viewModel = CategoryViewModel()
             viewModel.delegate = self
+            viewModel.pickCategory = categoryForTracker
             let viewController = CategoryViewController(categoryViewModel: viewModel)
             present(viewController, animated: true)
         } else if trackerType == .habit && indexPath.row == 1 {
@@ -248,18 +249,22 @@ extension HabitAndEventViewController: UITableViewDataSource {
             assertionFailure("Не удалось выполнить приведение к EventAndHabitTableViewСеll")
             return UITableViewCell()
         }
+        
         let text = rowsForTableView[indexPath.row]
         cell.configureNameLable(textNameLable: text)
         if indexPath.row == 0 {
+            cell.descriptionLableIsEmpty = categoryForTracker.isEmpty
             cell.configureDescriptionLable(textDescriptionLable: categoryForTracker)
         } else if trackerType == .habit && indexPath.row == 1 {
             if weekDaysArrayForTracker.count == 7 {
                 cell.configureDescriptionLable(textDescriptionLable: "Каждый день")
             } else {
+                cell.descriptionLableIsEmpty = weekdaysForTracker.isEmpty
                 cell.configureDescriptionLable(textDescriptionLable: weekdaysForTracker)
             }
         }
         cell.backgroundColor = .ypBackground
+        cell.selectionStyle = .none
         return cell
     }
 }
@@ -344,7 +349,6 @@ extension HabitAndEventViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        // Устанавливаем отступы от границ экрана до ячеек
         return UIEdgeInsets(top: 24, left: 18, bottom: 24, right: 19)
     }
     
@@ -359,6 +363,8 @@ extension HabitAndEventViewController: UICollectionViewDelegateFlowLayout {
                                                   verticalFittingPriority: .fittingSizeLevel)
     }
 }
+
+//MARK: UICollectionViewDelegate
 
 extension HabitAndEventViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -388,6 +394,8 @@ extension HabitAndEventViewController: UICollectionViewDelegate {
     }
 }
 
+//MARK: CategoryViewModelDelegate
+
 extension HabitAndEventViewController: CategoryViewModelDelegate {
     func categoryIsPicked(category: String) {
         categoryForTracker = category
@@ -395,6 +403,8 @@ extension HabitAndEventViewController: CategoryViewModelDelegate {
         updateCreateButtonState()
     }
 }
+
+//MARK: WeekdaysViewControllerDelegate
 
 extension HabitAndEventViewController: WeekdaysViewControllerDelegate {
     func weekdaysIsPicket(weekDaysArray: [Weekdays]) {

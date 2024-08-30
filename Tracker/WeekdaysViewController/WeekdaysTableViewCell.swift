@@ -36,7 +36,6 @@ final class WeekdaysTableViewCell: UITableViewCell {
         weekdaysLable.translatesAutoresizingMaskIntoConstraints = false
         switchButton.translatesAutoresizingMaskIntoConstraints = false
         
-        
         contentView.addSubview(switchButton)
         contentView.addSubview(weekdaysLable)
         

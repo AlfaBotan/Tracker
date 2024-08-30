@@ -1,0 +1,16 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Илья Волощик on 20.08.24.
+  
+*/
+
+"trackers" = "Trackers";
+"filters" = "Filters";
+"statistics" = "Statistics";
+"search" = "Search";
+"emptyState.title" = "What are we tracking?";
+"delete" = "Delete";
+"delete.confirmation" = "Are you sure you want to delete the tracker?";
+"cancel" = "Abort";

@@ -47,7 +47,6 @@ final class HabitAndEventCollectionViewCell: UICollectionViewCell {
         backView.addSubview(colorView)
         backView.addSubview(smileLabel)
         
-        
         NSLayoutConstraint.activate([
             backView.heightAnchor.constraint(equalToConstant: 46),
             backView.widthAnchor.constraint(equalToConstant: 46),

@@ -17,7 +17,6 @@ final class CategoryTableViewСеll: UITableViewCell {
     
     private lazy var categoryLable = UILabel()
     
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         configureSubviews()
@@ -34,12 +33,10 @@ final class CategoryTableViewСеll: UITableViewCell {
     }
     
     func configureSubviews() {
-        
         doneImg.isHidden = true
         
         categoryLable.translatesAutoresizingMaskIntoConstraints = false
         doneImg.translatesAutoresizingMaskIntoConstraints = false
-        
         
         contentView.addSubview(doneImg)
         contentView.addSubview(categoryLable)
